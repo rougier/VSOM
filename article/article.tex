@@ -1,0 +1,32 @@
+\documentclass[a4paper, oneside, 11pt, final]{article}
+\usepackage[a4paper, left=4cm, right=4cm, top=2cm, bottom=3cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[american]{babel}
+\usepackage{graphics}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{authblk}
+\usepackage{libertine} \usepackage[libertine]{newtxmath}
+\usepackage[colorlinks=true, urlcolor=black, linkcolor=black, citecolor=black]{hyperref}
+\usepackage[backend=biber, style=authoryear, doi=false, url=false,
+            giveninits=true, natbib=true]{biblatex}
+\addbibresource{bibliography.bib}
+
+% -----------------------------------------------------------------------------
+\title{Randomized Self Organizing Map}
+\date{\small \today}
+\author[1,2,3]{Nicolas P. Rougier\small}
+\affil[1]{Inria Bordeaux Sud-Ouest}
+\affil[2]{Institut des Maladies Neurodégénératives,
+          Université  de Bordeaux, CNRS UMR 5293}
+\affil[3]{LaBRI, Université de Bordeaux,
+          Institut Polytechnique de Bordeaux, CNRS UMR 5800}
+% -----------------------------------------------------------------------------
+\begin{document}
+\input{00-titlepage.tex}
+\input{01-introduction.tex}
+\input{02-methods.tex}
+\input{03-results.tex}
+\input{04-discussion.tex}
+\input{05-references.tex}
+\end{document}
+
