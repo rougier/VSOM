@@ -3,9 +3,13 @@
 # Distributed under the terms of the BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
-import os, sys, struct
+import os
+import sys
+import struct
 
 # Read the MNIST dataset (training or testing)
+
+
 def read(dataset="training", path="MNIST"):
     if dataset == "training":
         filename_img = os.path.join(path, 'train-images-idx3-ubyte')
@@ -20,7 +24,8 @@ def read(dataset="training", path="MNIST"):
         magic, count = struct.unpack(">II", file.read(8))
         labels = np.fromfile(file, dtype=np.int8)
         Y = np.zeros((len(labels), 10))
-        for i in range(len(labels)): Y[i,labels[i]] = 1
+        for i in range(len(labels)):
+            Y[i, labels[i]] = 1
         labels = Y
 
     with open(filename_img, 'rb') as file:

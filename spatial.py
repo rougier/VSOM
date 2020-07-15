@@ -9,6 +9,7 @@ import scipy.spatial
 from shapely.geometry import Polygon
 from math import sqrt, ceil, floor, pi, cos, sin
 
+
 def voronoi_finite_polygons_2d(vor, radius=None):
     """
     Reconstruct infinite voronoi regions in a 2D diagram to finite
@@ -67,7 +68,7 @@ def voronoi_finite_polygons_2d(vor, radius=None):
 
             # Compute the missing endpoint of an infinite ridge
 
-            t = vor.points[p2] - vor.points[p1] # tangent
+            t = vor.points[p2] - vor.points[p1]  # tangent
             t /= np.linalg.norm(t)
             n = np.array([-t[1], t[0]])  # normal
 
@@ -81,7 +82,7 @@ def voronoi_finite_polygons_2d(vor, radius=None):
         # sort region counterclockwise
         vs = np.asarray([new_vertices[v] for v in new_region])
         c = vs.mean(axis=0)
-        angles = np.arctan2(vs[:,1] - c[1], vs[:,0] - c[0])
+        angles = np.arctan2(vs[:, 1] - c[1], vs[:, 0] - c[0])
         new_region = np.array(new_region)[np.argsort(angles)]
 
         # finish
@@ -90,8 +91,7 @@ def voronoi_finite_polygons_2d(vor, radius=None):
     return new_regions, np.asarray(new_vertices)
 
 
-
-def clipped_voronoi(points, bbox=[0,1,0,1]):
+def clipped_voronoi(points, bbox=[0, 1, 0, 1]):
     vor = scipy.spatial.Voronoi(points)
     regions, vertices = voronoi_finite_polygons_2d(vor)
     min_x = vor.min_bound[0] - 0.1
@@ -103,8 +103,8 @@ def clipped_voronoi(points, bbox=[0,1,0,1]):
     maxs = np.tile((max_x, max_y), (vertices.shape[0], 1))
     bounded_vertices = np.min((bounded_vertices, maxs), axis=0)
 
-    xmin,xmax,ymin,ymax = bbox
-    clip = Polygon([(xmin,ymin), (xmin, ymax), (xmax,ymax), (xmax,ymin)])
+    xmin, xmax, ymin, ymax = bbox
+    clip = Polygon([(xmin, ymin), (xmin, ymax), (xmax, ymax), (xmax, ymin)])
     polygons = []
     for region in regions:
         polygon = vertices[region]
@@ -123,7 +123,7 @@ def voronoi(points, bbox):
         return np.logical_and(
             np.logical_and(bbox[0] <= points[:, 0], points[:, 0] <= bbox[1]),
             np.logical_and(bbox[2] <= points[:, 1], points[:, 1] <= bbox[3]))
-    
+
     # Select points inside the bounding box
     i = in_box(points, bbox)
 
@@ -187,7 +187,6 @@ def centroid(V):
     return [Cx, Cy]
 
 
-
 def blue_noise(shape, radius, k=30):
     """
     Generate blue noise over a two-dimensional rectangle of size (width,height)
@@ -232,7 +231,6 @@ def blue_noise(shape, radius, k=30):
                     return False
         return True
 
-    
     width, height = shape
     cellsize = radius / sqrt(2)
     grid_width = int(ceil(width / cellsize))
@@ -251,7 +249,7 @@ def blue_noise(shape, radius, k=30):
         queue[qi] = queue[-1]
         queue.pop()
         for _ in range(k):
-            theta = rng.uniform(0,2*pi)
+            theta = rng.uniform(0, 2*pi)
             r = radius * np.sqrt(rng.uniform(1, 4))
             p = qx + r * cos(theta), qy + r * sin(theta)
             if not (0 <= p[0] < width and 0 <= p[1] < height) or not fits(p, radius):
@@ -261,7 +259,6 @@ def blue_noise(shape, radius, k=30):
             grid[gx + gy * grid_width] = p
 
     return np.array([p for p in grid if p is not None])
-
 
 
 def distribution(n=1024, dtype="random", jitter=0):
@@ -277,31 +274,29 @@ def distribution(n=1024, dtype="random", jitter=0):
                            np.linspace(d, 1-d, n, endpoint=True))
         P = np.c_[X.ravel(), Y.ravel()]
         P += jitter * np.random.uniform(-1, 1, P.shape)
-        P[:,0] = np.minimum(np.maximum(P[:,0], d), 1-d)
-        P[:,1] = np.minimum(np.maximum(P[:,1], d), 1-d)
-        
-        V = clipped_voronoi(P, bbox=[0,1,0,1])
-        return P, V 
+        P[:, 0] = np.minimum(np.maximum(P[:, 0], d), 1-d)
+        P[:, 1] = np.minimum(np.maximum(P[:, 1], d), 1-d)
 
+        V = clipped_voronoi(P, bbox=[0, 1, 0, 1])
+        return P, V
 
     # Blue noise distribution
     radius = np.sqrt(2/(n*pi))
-    P = blue_noise(shape=(1,1), radius=radius)
-    
+    P = blue_noise(shape=(1, 1), radius=radius)
+
     # Add or remove points to have exact count
     if len(P) > n:
         P = P[:n]
     elif len(P) < n:
-        P = np.concatenate([P, np.random.uniform(0, 1, (n-len(P),2))])
-        
+        P = np.concatenate([P, np.random.uniform(0, 1, (n-len(P), 2))])
+
     # Lloyd relaxation (because of added or removed points)
     for i in range(10):
-        C, V = [], clipped_voronoi(P, bbox=[0,1,0,1])
+        C, V = [], clipped_voronoi(P, bbox=[0, 1, 0, 1])
         for vertices in V:
             C.append(centroid(vertices))
         P = np.array(C)
     return P, V
-
 
 
 # -----------------------------------------------------------------------------
@@ -310,14 +305,14 @@ if __name__ == '__main__':
     from matplotlib.collections import LineCollection
 
     def plot(ax, P, V):
-        ax.scatter(P[:,0], P[:,1], s=25, fc="w", ec="k", lw=1)
+        ax.scatter(P[:, 0], P[:, 1], s=25, fc="w", ec="k", lw=1)
         collection = LineCollection(V, color="0.5", linewidth=0.5)
         ax.add_collection(collection)
-        ax.set_xlim(0,1), ax.set_xticks([])
-        ax.set_ylim(0,1), ax.set_yticks([])
-        
+        ax.set_xlim(0, 1), ax.set_xticks([])
+        ax.set_ylim(0, 1), ax.set_yticks([])
+
     np.random.seed(123)
-    plt.figure(figsize=(12,4))
+    plt.figure(figsize=(12, 4))
     P, V = distribution(n=256, dtype="regular", jitter=0.00)
     plot(plt.subplot(1, 3, 1, aspect=1), P, V)
     P, V = distribution(n=256, dtype="regular", jitter=0.02)
