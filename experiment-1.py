@@ -8,6 +8,7 @@ import plot
 import numpy as np
 import matplotlib.pyplot as plt
 
+from pseudospectra import ps_on_gram
 
 # -----------------------------------------------------------------------------
 if __name__ == '__main__':
@@ -56,6 +57,8 @@ if __name__ == '__main__':
         plot.letter(ax, chr(ord("C")+i))
     plt.tight_layout()
 
-    print(som.codebook['X'].shape)
+    samples = np.linspace(0, 1, 50)
+    ps_on_gram(som, samples)
+
     # plt.savefig("experiment-1.pdf")
     plt.show()

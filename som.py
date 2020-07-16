@@ -57,8 +57,8 @@ class SOM:
                 # K = np.fromiter(lengths.keys(), dtype=int)
                 # V = np.fromiter(lengths.values(), dtype=int)
                 # D[src, K] = V
+            self.graph = G
 
-        self.graph = G
         self.size = len(P)
         self.positions = P
         self.voronoi = V

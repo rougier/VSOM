@@ -11,8 +11,6 @@ import matplotlib.patheffects as path_effects
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 from matplotlib.collections import LineCollection, PolyCollection
 
-from graph_analysis import graph_laplacian
-
 
 def network(ax, som):
     """
@@ -80,7 +78,7 @@ def activation(ax, som, sample, cmap='plasma'):
 
 
 def weights_1D(ax, som, cmap='gray'):
-    P, V, E, G = som.positions, som.voronoi, som.edges, som.graph
+    P, V, E = som.positions, som.voronoi, som.edges
     codebook = som.codebook["X"].ravel()
     cmap = matplotlib.cm.get_cmap(cmap)
     norm = matplotlib.colors.Normalize(vmin=0, vmax=1)
