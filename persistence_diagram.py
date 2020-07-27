@@ -50,11 +50,13 @@ def geometry_score(data):
 
 
 if __name__ == '__main__':
-    cp = gs.circle(10)
+    # cp = gs.circle(10)
+    cp = np.load("regular.npy")
     bc0, i00, i01, _ = dgm(cp)
 
-    cp = np.array([[.2, .2], [.4, .2], [.2, .3], [1.7, 2], [1, .9], [.8, .8],
-                   [.7, .9], [1.1, .9]])
+    # cp = np.array([[.2, .2], [.4, .2], [.2, .3], [1.7, 2], [1, .9], [.8, .8],
+    #                [.7, .9], [1.1, .9]])
+    cp = np.load("random.npy")
     bc1, i10, i11, _ = dgm(cp)
 
     print(gd.bottleneck_distance(i00, i10))

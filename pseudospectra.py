@@ -37,7 +37,12 @@ def compute_pseudospectra(X, is_plot=True):
     circles = np.logspace(np.log10(10e-4), np.log10(1.5), 20)[:-3]
     CS = ax.contour(Xx, Yy, spectra+1e-20, levels=circles)
     ax.clabel(CS, inline=1, fontsize=10)
-    return spectrum
+    return spectra
+
+
+def spectrum(X):
+    w, v = np.linalg.eig(X)
+    return w, v
 
 
 def activation(som, samples):
@@ -50,9 +55,13 @@ def activation(som, samples):
     return Y
 
 
-def spectrum(X):
-    w, v = np.linalg.eig(X)
-    return w, v
+def activation_(codebook, samples):
+    p, n, m = codebook.shape[0], codebook.shape[1], samples.shape[0]
+    Y = np.zeros((m, p))
+    for i, s in enumerate(samples):
+        tmp = -np.sqrt(((codebook - s)**2).sum(axis=-1))
+        Y[i, :] = tmp
+    return Y
 
 
 def ps_on_gram(som, samples):
