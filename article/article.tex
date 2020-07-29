@@ -9,19 +9,27 @@
 \usepackage[colorlinks=true, urlcolor=black, linkcolor=black, citecolor=black]{hyperref}
 \usepackage[backend=biber, style=authoryear, doi=false, url=false,
             giveninits=true, natbib=true]{biblatex}
+\usepackage{fullpage}
 \addbibresource{bibliography.bib}
+\usepackage{lineno}
+
+\newcommand{\gid}[1]{\textcolor{blue}{#1}}
+
 
 % -----------------------------------------------------------------------------
 \title{Randomized Self Organizing Map}
 \date{\small \today}
 \author[1,2,3]{Nicolas P. Rougier\small}
+\author[4]{Georgios Is. Detorakis\small}
 \affil[1]{Inria Bordeaux Sud-Ouest}
 \affil[2]{Institut des Maladies Neurodégénératives,
           Université  de Bordeaux, CNRS UMR 5293}
 \affil[3]{LaBRI, Université de Bordeaux,
           Institut Polytechnique de Bordeaux, CNRS UMR 5800}
+\affil[4]{adNomus Inc., San Jose, CA, USA}
 % -----------------------------------------------------------------------------
 \begin{document}
+\date{}
 \input{00-titlepage.tex}
 \input{01-introduction.tex}
 \input{02-methods.tex}

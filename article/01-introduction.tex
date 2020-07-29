@@ -1,61 +1,85 @@
 \section{Introduction}
 
-Self-organizing map \citep{Kohonen:1982} is a vector quantization method that
-maps data onto a regular grid, usually two-dimensional. After learning has
-converged, the codebook is self-organized such that the prototypes associated
-with two nearby nodes are similar. This is a direct consequence of the
-underlying topology of the map as well as the learning algorithm that, when
-presented with a new sample, modifies the prototype of the best matching unit
-(BMU) as well as the units in its vicinity (neighborhood). SOM have been used
-in a huge number of applications \citep{Kaski:1998,Oja:2003,Polla:2009} and
-there exists today several variants of the original algorithm
-\citep{Kohonen:2001}. However, according to the survey of
-\citet{Astudillo:2014}, only a few of these variants consider an alternative
-topology for the map, the regular Cartesian and the hexagonal grid being by far
-the most common used ones. Among the alternatives, the growing neural gas
-\citep{Fritzke:1994} is worth to be mentionned since it relies on a dynamic set
-of units and builds the topology {\em a posteriori} as it is also the case for
-the incremental grid growing neural network \citep{Blackmore:1995} and the
-controled growth self organizing map \citep{Alahakoon:2000}. However, this {\em
-  a posteriori} topology is built in the data space as opposed to the neural
-space. This means that the neighborhood property is lost and two neurons that
-are close to each other on the map may end with totally different prototypes in
-the data space. The impact of the network topology on the self-organization has
-also been studied by \citet{Jiang:2009} using the MNIST database. In the direct
-problem, these authors consider SOMs whose neighborhood is defined by a
-regular, small world or random network and show a weak influence of the
-topology on the performance of the underlying model. In the inverse problem,
-authors tries to optimize the topology of the network using evolutionnary
-algorithms \citep{Eiben:2003} in order to minimize the classification error and
-results indicate a weak correlation between the topology and the performances
-in this specific case. This conclusion by \citet{Burguillo:2013} is a bit
-different. Authors studied self-organizing map for time serie predictions and
-considered various topologies (spatial, small-world, random and
-scale-free). They concluded that the classical spatial topology remains the
-best while the scale-free topology seems inadequate for the time series
-prediction task. But for the two others, the difference was not so large and
-topology doed not seem to dramatically impact performance.\\
+Self-organizing map (SOM)~\citep{Kohonen:1982} is a vector quantization method
+that maps high dimensional data on a low-dimensional grid (usually
+two-dimensional) through an unsupervised learning process. The low-dimensional
+discrete map, usually called codebook, consists of code words (vectors) that
+represent a part of the input space. Two neighboring code words represent
+similar input samples (prototypes). This is a direct consequence of the
+underlying topology of the map as well as the learning algorithm. When
+a new sample is given then the learning algorithm modifies the prototype of 
+the best matching unit (BMU) as well as the units in its vicinity (neighborhood).
+SOM have been used in a variety of applications~\citep{Kaski:1998,Oja:2003,Polla:2009}
+and several variations of the original algorithm have been proposed
+over time \gid{[CITE A REVIEW HERE]}~\citep{Kohonen:2001}.
 
-In this work, we are interested in exploring alternative topology in order to
-solve one of the fundamental problem related to SOM: the intrinsic dimension of
-the data may or may not correspond to the dimension of the network. Most of
-the time, the topology of the SOM is one dimensional (linear network) or two
-dimensional (regular or hexagonal grid) and this may not correspond to the
-intrinsic dimension of the data, especially in the high dimensional case. This
-may result in the non-preservation of the topology \citep{Villmann:1999}
-with potentially multiple foldings of the map. The problem is made even harder
-considering the data are unknown at the time of construction of the network.
-To overcome this topological constraint, we propose a variation of the self
-organizing map algorithm by considering the random placement of neurons on a
-two-dimensional manifold, following a blue noise distribution from which
-various topologies can be derived. These topologies possess random (but
-controllable) discontinuities that allow for a more flexible self-organization,
-especially with high-dimensional data. After introducing the methods, the model
-will be illustrated using several classical examples and its properties will be
-more finely studied. Finally, we'll explain how this model can be made
-resilient to neural gain or loss by reorganizing the neural sheet using
-centroidal Voronoi tesselation.
+However, most SOM algorithms assume a fixed neural space (\emph{i.e.},
+the space defined by the nodes of the SOM network -- code words)  topology, 
+which usually is either a rectangular or a hexagonal Cartesian 
+grid~\citet{Astudillo:2014}. This sort of predefined topology of neural space 
+enforces a rigidity on the neural map and this can lead to a \emph{dimension
+mismatch} between the input and neural space. This often results to neural
+representations that are ill-formed and do not cover properly the entire data
+space. For instance, if the topology of the SOM is one dimensional or 
+two-dimensional (regular or hexagonal grid) and the intrinsic dimension of the 
+data is higher than the topology may not be preserved~\citep{Villmann:1999},
+leading some times to multiple foldings of the map. One of the roots of this
+problem is the lack of knowledge of the underlying topology of the data space.
 
+One way to overcome this limitation is to introduce dynamic set of units 
+(neurons) that learn the topology \emph{a posteriori}. 
+Such algorithms are the (i) growing neural gas~\citep{Fritzke:1994},
+(ii) the incremental grid growing neural network~\citep{Blackmore:1995}, and
+the controlled growth map~\citep{Alahakoon:2000}. Nonetheless, the topology
+in these cases, is built in the data space as opposed to the neural
+space. This means that the neighborhood property is lost and two nearby neurons
+on the map may end up with totally different prototypes in the data space.
 
-% of the original topology in order ot fit the data, but the topology
-% constraints may hinder such folding.
+Since the dynamic units do not really solve the problem of preserving the 
+topology and the topological relations between neurons one should come up 
+with a different solution. One such potential solution is to use an alternative
+topology that permits more flexibility to the neural space without loosing 
+performance. 
+Therefore, in this work we propose a variation of the SOM algorithm by 
+considering the random placement of neurons on a two-dimensional manifold,
+following a blue noise distribution from which one can derive various different
+topologies. These topologies possess random (but controllable) discontinuities
+that allow for a more flexible self-organization, especially with 
+high-dimensional data.
+
+We are not the first to explore alternative topologies for training a SOM. 
+The impact of the network topology on the self-organization has been studied 
+before. For instance, the authors in~\citet{Jiang:2009} consider SOMs whose
+neighborhood is defined by a regular, small world or random network trained 
+on the MNIST data set, showing a weak influence of the topology on the
+performance of the SOM learning algorithm. Furthermore, they optimized the
+topology of the network using evolutionary algorithms~\citep{Eiben:2003}
+minimizing the classification error. In this case, their results indicate again
+a weak correlation between the topology and the performance of the SOM. 
+Another study conducted by Burguillo et al.~\citet{Burguillo:2013} found that
+the standard Cartesian grid topology was the best over non-conventional
+topologies (small world, random, and scale-free) for SOMs solving time series
+prediction problems. \\
+
+This paper is organized as follows: First we introduce the necessary
+terminology and notation. Then we present the model and the learning algorithm
+as well as the tools to asses the performance of the proposed algorithm.
+After introducing the model, we conduct several experiments to test the 
+performance of the algorithm and examine the final topology of the neural space.
+Finally, we tested ability of the learning algorithm to cope with situations 
+where reorganization of the neural space is necessary. More precisely, 
+(i) we perform an ablation study by removing units from the neural space, and
+(ii) we add extra neurons on the map increasing the capacity of the neural
+space. In both cases the topology of the neural space alters affecting the 
+computations of the SOM.
+
+\gid{Notes
+\begin{itemize}
+    \item Does the algorithm perform well on exotic manifolds (non-Euclidean)? For
+instance, hyperbolic.  
+    \item Blue noise might be ideal for biologically plausible algorithms since
+        it carries high frequencies. Usually, physical systems compress data 
+        based on an energy functional and it is common to keep the highest
+        frequencies (see Wavelets and Multilevel Wavelet Decomposition).
+\end{itemize}
+}

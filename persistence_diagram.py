@@ -51,12 +51,12 @@ def geometry_score(data):
 
 if __name__ == '__main__':
     # cp = gs.circle(10)
-    cp = np.load("regular.npy")
+    cp = np.load("./data/experiment-2-regular.npy")
     bc0, i00, i01, _ = dgm(cp)
 
     # cp = np.array([[.2, .2], [.4, .2], [.2, .3], [1.7, 2], [1, .9], [.8, .8],
     #                [.7, .9], [1.1, .9]])
-    cp = np.load("random.npy")
+    cp = np.load("./data/experiment-2-random.npy")
     bc1, i10, i11, _ = dgm(cp)
 
     print(gd.bottleneck_distance(i00, i10))
@@ -66,10 +66,25 @@ if __name__ == '__main__':
                                           sample_range=[np.nan, np.nan])
     landscape = vector_methods.Landscape(num_landscapes=5, resolution=100,
                                          sample_range=[np.nan, np.nan])
-    # plt.figure()
-    # plt.plot(betti_seq(i00[:-1]))
-    # plt.figure()
-    # plt.plot(landscape(i00[:-1]))
+    plt.figure()
+    plt.plot(betti_seq(i00[:-1]), 'k', alpha=0.6, label="Regular B0")
+    plt.plot(betti_seq(i10[:-1]), 'b', alpha=0.6, label="Random B0")
+    plt.legend()
+
+    plt.figure()
+    plt.plot(betti_seq(i01[:-1]), 'k', alpha=0.6, label="Regular B1")
+    plt.plot(betti_seq(i11[:-1]), 'b', alpha=0.6, label="Random B1")
+    plt.legend()
+
+    plt.figure()
+    plt.plot(landscape(i00[:-1]), 'k', alpha=0.6, label="Regular Landscape 0")
+    plt.plot(landscape(i10[:-1]), 'b', alpha=0.6, label="Random Landscape 0")
+    plt.legend()
+
+    plt.figure()
+    plt.plot(landscape(i01[:-1]), 'k', alpha=0.6, label="Regular Landscape 1")
+    plt.plot(landscape(i11[:-1]), 'b', alpha=0.6, label="Random Landscape 1")
+    plt.legend()
 
     # plt.scatter(cp[:, 0], cp[:, 1])
 

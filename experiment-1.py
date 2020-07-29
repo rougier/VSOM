@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 if __name__ == '__main__':
 
     seed = 1
-    topology = "random"
+    topology = "regular"
     n_unit = 1024
     n_samples = 25000
     n_neighbor = 3
@@ -59,7 +59,7 @@ if __name__ == '__main__':
 
     # samples = np.linspace(0, 1, 50)
     # ps_on_gram(som, samples)
-    # np.save("random", som.codebook['X'])
+    # np.save("./data/experiment-1-regular", som.codebook['X'])
 
     # plt.savefig("experiment-1.pdf")
     plt.show()
