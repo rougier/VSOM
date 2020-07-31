@@ -1,15 +1,18 @@
 \section{Methods}
 
-In the following, we will use definitions and notations introduced by
-\citet{rougier:2011} where a neural map is defined as the projection from a
-manifold $\Omega \subset \mathbb{R}^d$ onto a set $\mathcal{N}$ of $n$ {\em
-  neuron}s which is formally written as $\Phi : \Omega \rightarrow
-\mathcal{N}$. Each neuron $i$ is associated with a code word $\mathbf{w}_i \in
-\mathbb{R}^d$, all of which established the set $\{\mathbf{w}_i\}_{i \in
-  \mathcal{N}}$ that is referred as the code book. The mapping from $\Omega$ to
+\subsection{Notation}
+Before we present our new SOM learning algorithm, we introduce the notation 
+and terminology we are using throughout the present work. We borrow the
+notation from a previous work~\citep{rougier:2011}. 
+A neural map is defined to be the projection from a manifold
+$\Omega \subset \mathbb{R}^d$ onto a set $\mathcal{N}$ of $n$ {\em neuron}s
+$\Phi : \Omega \rightarrow \mathcal{N}$.
+Each neuron $i$ is associated with a code word $\mathbf{w}_i \in
+\mathbb{R}^d$, all of which establish the set 
+$\mathcal{W} = \{\mathbf{w}_i, i \in \mathcal{N}\}$ that is referred as the code book. The mapping from $\Omega$ to
 $\mathcal{N}$ is a closest-neighbor winner-take-all rule such that any vector
 $\mathbf{v} \in \Omega$ is mapped to a neuron $i$ with the code
-$\mathbf{w}_\mathbf{v}$ being closest to the actual presented stimulus vector
+$\mathbf{w}_\mathbf{v}$ being closest to the current input vector
 $\mathbf{v}$,
 \begin{equation}
 \Phi : \mathbf{v} \mapsto argmin_{i \in \mathcal{N}} (\lVert \mathbf{v} -
@@ -18,21 +21,28 @@ $\mathbf{v}$,
 \end{equation}
 The neuron $\mathbf{w}_\mathbf{v}$ is named the best matching unit (BMU) and
 the set $C_i = \{x \in \Omega | \Phi(x) = \mathbf{w}_i \}$ defines the {\em
-  receptive field} of the neuron $i$.
+  receptive field} of neuron $i$.
 
 
 \subsection{Spatial distribution} % \& Centroidal Voronoi Tesselation}
+\label{sec:spatial_dist}
 
-The SOM space is usually defined as a two-dimensional region where nodes are
-arranged in a regular lattice (rectangular or hexagonal). Here, we consider
-instead the random placement of neurons with a specific spectral distribution
-(blue). As explained by \citet{Zhou:2012}, the spectral distribution
+The SOM space is usually defined as a two-dimensional manifold where nodes are
+arranged in a regular lattice (rectangular or hexagonal). Here, we follow a 
+different approach and instead of the regular lattice we place the neurons
+randomly by sampling a specific spectral distribution. More specifically, we
+assign neurons positions by drawing samples from a Blue noise distribution. 
+\citet{Zhou:2012}. have shown that the spectral distribution
 property of noise patterns is often described in terms of the Fourier spectrum
-color. White noise corresponds to a flat spectrum with equal energy distributed
-in all frequency bands while blue noise has weak low-frequency energy, but
-strong high-frequency energy. Said differently, blue noise has intuitively
-good properties with points evenly spread without visible structure (see
-figure~\ref{fig:sampling} for a comparison of spatial distributions).
+color. For instance, white noise corresponds to a flat spectrum with signal's
+energy equally distributed to all frequency bands. On the other hand, blue 
+noise has weak low-frequency energy and strong high-frequency energy. This
+means that the signal stores its energy mostly on the high-frequency
+components introducing a form of data compression \gid{[CITATION REQ.]}.
+Another interesting, and useful in this work, property of blue noise is that 
+the positions of neurons drawn by a blue noise distribution are 
+evenly spread without any apparent structure (see figure~\ref{fig:sampling}
+for a comparison of spatial distributions).
 %%
 \begin{figure}[htbp]
   \includegraphics[width=\textwidth]{figures/blue-noise.pdf}
@@ -43,33 +53,42 @@ figure~\ref{fig:sampling} for a comparison of spatial distributions).
   \label{fig:sampling}
 \end{figure}
 %%
-There exists several methods \citep{Lagae:2008} to obtain blue noise
-sampling that have been originally designed for computer graphics (e.g. Poisson
-disk sampling, dart throwing, relaxation, tiling, etc.). Among these methods,
-the fast Poisson disk sampling in arbitrary dimensions \citep{Bridson:2007}
-is among the fastest (O(n)) and easiest to use. This is the one we retained for
-the placement of neurons over a normalized $[0,1]\times[0,1]$ region. Such
-Poisson disk sampling guarantees that samples are no closer to each other than
-a specified minimum radius. This initial placement is further refined by
-applying a LLoyd relaxation \citep{Lloyd:1982} scheme for 10 iterations,
-achieving a quasi centroidal Voronoi tesselation.
+
+Blue noise distributions exist for many years. They have being used in the
+field of computer graphics for Poisson disk sampling, dart throwing, relaxation,
+tiling, and other applications~\citep{Lagae:2008}. One of the fastest
+and easiest to implement method for generating blue noise samples is the 
+fast Poisson disk sampling. This method introduced by~\citep{Bridson:2007} 
+and performs on arbitrary dimensions at linear time ($\mathcal{O}(n)$).
+In this work, we imply this method for placing neurons over a normalized 
+region of $[0,1]\times[0,1]$. Such Poisson disk sampling guarantees that 
+samples are no closer to each other than a specified minimum radius. This
+initial placement is further refined by applying a LLoyd relaxation~\citep{Lloyd:1982}
+scheme for $10$ iterations to achieve a quasi centroidal Voronoi tesselation.
 
 \subsection{Topology}
+\label{sec:topo}
 
-Considering a set of $n$ points $P = \{P_i\}_{i \in [1,n]}$ on a finite region,
-we first compute the Euclidean distance matrix $E = \{E_{ij}\}_{i,j \in [1,n]}
-= \lVert P_i - P_j \rVert$ and we subsequently define a connectivity matrix
-$G^{p} = \{G^{p}_{ij}\}_{i,j \in [1,n]}$ such that only the $p$ closest points
-are connected. More precisely, if $P_j$ is among the $p$ closest neighbours of
-$P_i$ then $G^p_{ij} = 1$ else we have $G^p_{ij} = 0$. From this connectivity
-matrix representing a graph, we compute the length of the shortest path between
-each pair of nodes and stored them into a distance matrix $D^p$. Note that
-lengths are measured in the number of nodes between two nodes such that two
-nearby points (relatively to the Euclidean distance) may have a correspoding
-long graph distance as illustrated on figure \ref{fig:topology}. This matrix
+Consider a set $P$ of $n$ points on a finite region of $[0, 1] \times [0, 1]$. 
+The steps we follow to determine the topology of the SOM are:
+First, we compute the Euclidean distance matrix ${\bf E} \in \mathbb{R}^{n\times n}$,
+where $e_{ij} = \lVert p_i - p_j \rVert$ and $i, j=1, \ldots, n$. Subsequently 
+we define a connectivity matrix ${\bf G}_m$ with elements $g_{ij} = 1$ if 
+$p_j$ belongs to the $m$ closest points to $p_i$ and $g_{ij} = 0$ otherwise.
+This definition implies that the matrix ${\bf G}_m$ carries information about
+connected neurons within a predetermined vicinity. Once we compute matrix
+${\bf G_m}$, which essentially represents a graph, we compute the shortest
+path between each pair of nodes on the graph and we store them into a new
+matrix called ${\bf D}_m$. Note that lengths are measured in number of nodes
+(hops) required to reach two nodes such that the two corresponding Euclidean
+points (represented by the nodes) may have a graph distance as illustrated in 
+figure \ref{fig:topology}. 
+\gid{This matrix
 distance is then normalized by dividing it by the maximum distance between two
-nodes. In the singular case when two nodes cannot be connected through the
-graph, we recompute a spatial distribution until all nodes can be connected.
+nodes. NOT VERY CLEAR}.
+In the degenerative case where two nodes are not connected on the graph, we
+resample from a spatial distribution until all nodes have degree greater than 
+one (are connected at least with one other node \gid{IS THIS CORRECT?}).
 %%
 \begin{figure}
   \includegraphics[width=\columnwidth]{figures/distances.pdf}
@@ -86,55 +105,112 @@ graph, we recompute a spatial distribution until all nodes can be connected.
 
 \subsection{Learning}
 
-The learning process is an iterative process between time $t=0$ and time
-$t=t_f \in \mathbb{N}^+$ where vectors $\mathbf{v} \in \Omega$ are sequentially
-presented to the map with respect to the probability density function $f$. For
-each presented vector $\mathbf{v}$ at time $t$, a winner $s \in \mathcal{N}$ is
-determined according to equation (\ref{eq:psi}). All codes $\mathbf{w}_{i}$
-from the code book are shifted towards $\mathbf{v}$ according to
+The learning algorithm we propose in this work relies on the standard SOM 
+algorithm~\citep{Kohonen:1982}. Once we have define the topology of the map
+following the steps we described in paragraph~\ref{sec:topo}, we can start 
+the learning process. Learning is iterative and starts at a time $t_0=0$ and
+runs until some predetermined final time step, $t_f \in \mathbb{N}^+$, has been 
+reached. At every iteration input vectors $\mathbf{v} \in \Omega$ are 
+sequentially given to the
+map with respect to the probability density function $f$ \gid{Where is defined?}.
+For each vector $\mathbf{v}$ at time $t$, a winner neuron with index 
+$s \in \mathcal{N}$ is determined according to equation (\ref{eq:psi}). This
+means that at time $t$ neuron $s$ is closer to the input vector ${\bf v}$, in
+the sense of Euclidean distance, than any other neuron. 
+Once the winner neuron has been identified all codes $\mathbf{w}_{i}$ from the
+current code book are shifted towards $\mathbf{v}$ according to
+\begin{align}
+\label{eq:som-learning}
+    \Delta\mathbf{w}_{i} &= \varepsilon(t)~h(t,i,s;\sigma)~(\mathbf{v} - \mathbf{w}_i), 
+\end{align}
+where $s$ is the index of the winner neuron, $i$ is the index of code words
+in the code book and $t$ is the current time step. $h_\sigma(t,i,j;\sigma)$ is
+a neighborhood function of the form
 \begin{equation}
-  \Delta\mathbf{w}_{i} = \varepsilon(t)~h_\sigma(t,i,s)~(\mathbf{v} -
-  \mathbf{w}_i)
-  \label{eq:som-learning}
-\end{equation}
-with $h_\sigma(t,i,j)$ being a neighborhood function of the form
-\begin{equation}
-  h_\sigma(t,i,j) = e^{- \frac{{D^p_{ij}}^2}{\sigma(t)^2}}
+  h(t,i,j; \sigma) = \exp\Big(-\frac{{d_{ij}}^2}{\sigma(t)^2}\Big)
   \label{eq:som-neighborhood}
 \end{equation}
-where $\varepsilon(t) \in \mathbb{R}$ is the learning rate and $\sigma(t) \in \mathbb{R}$
-is the width of the neighborhood defined as
-\begin{equation}
-  \sigma(t) =
-  \sigma_i\left(\frac{\sigma_f}{\sigma_i}\right)^{t/t_f}, \text{ with } \varepsilon(t) =
-  \varepsilon_i\left(\frac{\varepsilon_f}{\varepsilon_i}\right)^{t/t_f},
-\end{equation}
-while $\sigma_i$ and $\sigma_f$ are respectively the initial and final
-neighborhood width and $\varepsilon_i$ and $\varepsilon_f$ are respectively the
-initial and final learning rate. We usually have $\sigma_f \ll \sigma_i$ and
-$\varepsilon_f \ll \varepsilon_i$.
+where $\varepsilon: \mathbb{R} \rightarrow \mathbb{R}$ is the learning rate
+time-dependent function given by
+$\varepsilon(t) = \varepsilon_i\left(\frac{\varepsilon_f}{\varepsilon_i}\right)^{t/t_f}$,
+where $\varepsilon_i$ and $\varepsilon_f$ are the initial and final
+learning rates, respectively.
+$\sigma: \mathbb{R} \rightarrow \mathbb{R}$ is determines the width of the 
+neighborhood function~\eqref{eq:som-neighborhood} and it is reads
+$\sigma(t) = \sigma_i\left(\frac{\sigma_f}{\sigma_i}\right)^{t/t_f}$,
+where $\sigma_i$ and $\sigma_f$ are the initial and final neighborhood widths,
+respectively. We usually assume $\sigma_f \ll \sigma_i$ and 
+$\varepsilon_f \ll \varepsilon_i$. The entire learning procedure is summarized
+by Algorithm~\ref{algo:vsom}. 
 
 
-\subsection{Reorganization}
+%%
+\begin{algorithm}[!htpb]
+	\begin{algorithmic}
+    	\Require $\mathcal{S}$, $\mathcal{N}$, $t_f$, $dt$, $\varepsilon_i$, $\varepsilon_f$, $\sigma_i$, $\sigma_f$
+        \Ensure ${\bf W}$
+        \If {\text{Blue noise is True}}
+        	\State Compute blue noise distribution $\mathcal{B}$
+        	\State Compute $e_{ij} = || p_i - p_j ||$		\Comment{Euclidean pair distances matrix}
+        	\State Construct matrix ${\bf G}_m$			\Comment{Connectivity matrix}
+        	\State Compute matrix ${\bf D}_m$			\Comment{Shortest paths between nodes}
+        	\State Place neurons positions on points sampled from $\mathcal{B}$
+        \Else
+        	\State Discretize grid $[0, 1]\times[0, 1]$ and place neurons on its nodes
+        \EndIf
+        
+        \State $w_s \gets \varnothing$, ${\bf W} \sim \mathcal{U}(0, 1)$	\Comment{Initialize winner unit and code book}
+                 
+        \For{$t \gets 0, \ldots, t_f$}
+        	\State ${\bf v} \gets \bf{s}_t $	\Comment{${\bf s}_t \in \mathcal{S}$}
+        	\State $s \gets argmin_{i \in \mathcal{N}} (\lVert \mathbf{v} - \mathbf{w}_i \rVert)$
+        	\State $\varepsilon(t) = \varepsilon_i\left(\frac{\varepsilon_f}{\varepsilon_i}\right)^{t/t_f}$
+        	\State $\sigma(t) = \sigma_i\left(\frac{\sigma_f}{\sigma_i}\right)^{t/t_f}$
+        	\State $h(t,i,j; \sigma) = \exp\Big(-\frac{{d_{ij}}^2}{\sigma(t)^2}\Big)$
+        	\State ${\bf w}_i^{\text{new}} = {\bf w}_i^{\text{old}} + \varepsilon(t) \odot h(t,i,s;\sigma) \odot (\mathbf{v} - \mathbf{w}_i^{\text{old}})$
+        \EndFor
+	\end{algorithmic}
+\caption{Voronoi Self-organizing Map (vSOM). $\mathcal{N}$ is neurons index set,
+$\mathcal{I}$ is the input dataset, $t_f$ is the simulation time (or the number of input samples).
+$\varepsilon_i$ and $\varepsilon_f$ are the initial and final learning rates,
+respectively. $\sigma_i$ and $\sigma_f$ are the initial and final neighborhood
+widths. $\odot$ is the Hadamard product.}
+\label{algo:vsom}
+\end{algorithm}
+%%
 
-In case of neural loss (a set of neurons is removed from the map) or neural
-gain (a set of neurons is added to the map), we can appy the LLoyd relaxation
-scheme in order to achieve a new quasi centroidal Voronoi tesselation (see
-figure \ref{fig:CVT}) whose induced topology shares similarity with the orginal
-topology (before loss or gain).
 
-\begin{figure}
-  \includegraphics[width=\columnwidth]{figures/vsom-resilience.pdf}
-  \caption{\textbf{Reorganization following neural loss or gain.}  An initial
-    set of 248 neurons (outlined discs on panel \textbf{A}) has been modified
-    with the addition of 25 neurons (black discs) or the removal of 25 neurons
-    (red discs). Panels \textbf{B} and \textbf{C} show the final position of
-    neurons after 100 iterations of the centroidal Voronoi tesselation. Lines
-    shows individual movement of neurons. Panels \textbf{D}, \textbf{E} and
-    \textbf{F} show the 2-neighbors induced topology for \textbf{A},
-    \textbf{B} and \textbf{C} respectively.}
-  \label{fig:CVT}
-\end{figure}
+
+\subsection{Simulation Details}
+
+We conduct all the experiments using the parameters provided by
+Table~\ref{table:parameters}. In all the experiments the input space is
+the Cartesian product $[0, 1] \times [0, 1]$ and neurons positions drawn from
+a blue noise distribution using the fast Poisson disk sampling
+algorithm~\citep{Bridson:2007} (see paragraph~\ref{sec:spatial_dist} for more details). 
+The source code of the proposed algorithm is written in the Python programming
+language (SciPy~\citep{Jones:2001}, Matplotlib~\citep{Hunter:2007}
+and NumPy~\citep{Walt:2011}). Sources are available at 
+\href{https://github.com/rougier/VSOM}{github.com/rougier/VSOM}.
+All the experiments run on a [] machine equipped with []$\,\mathrm{GB}$ physical
+memory and [] operating system. 
+%%
+\begin{table}[!ht]
+  \begin{center}
+    \begin{tabular}{ll}
+        \textbf{Parameter} & \textbf{Value} \\
+        \hline
+        Number of epochs      ($t_f$)           & 25000\\
+        Learning rate initial ($\varepsilon_i$) & 0.50\\
+        Learning rate final   ($\varepsilon_f$) & 0.01\\
+        Sigma initial         ($\sigma_i$)      & 0.50\\
+        Sigma final           ($\sigma_f$)      & 0.01\\
+    \end{tabular}
+      \caption{\textbf{Default parameters} Unless specified otherwise, these are
+        the parameters used in all the simulations.}
+      \label{table:parameters}
+  \end{center}
+\end{table}
 
 
 %% Considering a set of $n$ points $P = \{P_i\}_{i \in [1,n]}$ on a finite domain

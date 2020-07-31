@@ -1,31 +1,5 @@
 \section{Results}
 
-We report in this section results on standard examples, using both low and high
-dimensional data. Unless specified otherwise, all the models were parameterized
-using values given in table \ref{table:parameters}. These values were chosen to
-be simple and do not really impact the performance of the model.
-%%
-\begin{table}[!ht]
-  \begin{center}
-    \begin{tabular}{ll}
-        \textbf{Parameter} & \textbf{Value} \\
-        \hline
-        Number of epochs      ($t_f$)           & 25000\\
-        Learning rate initial ($\varepsilon_i$) & 0.50\\
-        Learning rate final   ($\varepsilon_f$) & 0.01\\
-        Sigma initial         ($\sigma_i$)      & 0.50\\
-        Sigma final           ($\sigma_f$)      & 0.01\\
-    \end{tabular}
-      \caption{\textbf{Default parameters} Unless specified otherwise, these are
-        the parameters used in all the simulations.}
-      \label{table:parameters}
-  \end{center}
-\end{table}
-All simulations and figures were produced using the Python scientific stack,
-namely, SciPy \citep{Jones:2001}, Matplotlib \citep{Hunter:2007} and
-NumPy \citep{Walt:2011}. Sources are available at
-\href{https://github.com/rougier/VSOM}{github.com/rougier/VSOM}.\\
-
 
 \subsection{Low-dimensional data}
 
@@ -115,6 +89,25 @@ NumPy \citep{Walt:2011}. Sources are available at
 
 
 \subsection{Reorganization}
+
+In case of neural loss (a set of neurons is removed from the map) or neural
+gain (a set of neurons is added to the map), we can appy the LLoyd relaxation
+scheme in order to achieve a new quasi centroidal Voronoi tesselation (see
+figure \ref{fig:CVT}) whose induced topology shares similarity with the orginal
+topology (before loss or gain).
+
+\begin{figure}
+  \includegraphics[width=\columnwidth]{figures/vsom-resilience.pdf}
+  \caption{\textbf{Reorganization following neural loss or gain.}  An initial
+    set of 248 neurons (outlined discs on panel \textbf{A}) has been modified
+    with the addition of 25 neurons (black discs) or the removal of 25 neurons
+    (red discs). Panels \textbf{B} and \textbf{C} show the final position of
+    neurons after 100 iterations of the centroidal Voronoi tesselation. Lines
+    shows individual movement of neurons. Panels \textbf{D}, \textbf{E} and
+    \textbf{F} show the 2-neighbors induced topology for \textbf{A},
+    \textbf{B} and \textbf{C} respectively.}
+  \label{fig:CVT}
+\end{figure}
 
 \subsubsection*{Ablation}
 
