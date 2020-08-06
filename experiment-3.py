@@ -55,7 +55,7 @@ if __name__ == '__main__':
         plot.letter(ax, chr(ord("C")+i))
     plt.tight_layout()
 
-    np.save("./data/experiment-3-regular", som.codebook['X'])
+    # np.save("./data/experiment-3-regular", som.codebook['X'])
 
     # plt.savefig("experiment-3.pdf", dpi=300)
     plt.show()

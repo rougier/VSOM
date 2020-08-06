@@ -1,11 +1,9 @@
 import numpy as np
 import gudhi as gd
 from gudhi.representations import vector_methods
-import gs
 import matplotlib.pylab as plt
 
 # from sklearn.cluster import SpectralClustering
-from sklearn_tda import BettiCurve
 
 
 def disc(n_points=20):
@@ -41,22 +39,14 @@ def dgm(data):
     return bar_codes, dim0, dim1, dim2
 
 
-def geometry_score(data):
-    rlt = gs.rlts(data, L_0=32, gamma=1.0/8, i_max=100, n=100)
-    mrlt = np.mean(rlt, axis=0)
-    print(mrlt.shape)
-    plt.hist(mrlt)
-    # gs.fancy_plot(mrlt[:3])
-
-
 if __name__ == '__main__':
     # cp = gs.circle(10)
-    cp = np.load("./data/experiment-2-regular.npy")
+    cp = np.load("./data/experiment-2-regular.npy")[:512, :]
     bc0, i00, i01, _ = dgm(cp)
 
     # cp = np.array([[.2, .2], [.4, .2], [.2, .3], [1.7, 2], [1, .9], [.8, .8],
     #                [.7, .9], [1.1, .9]])
-    cp = np.load("./data/experiment-2-random.npy")
+    cp = np.load("./data/experiment-2-random.npy")[:512, :]
     bc1, i10, i11, _ = dgm(cp)
 
     print(gd.bottleneck_distance(i00, i10))
@@ -66,32 +56,28 @@ if __name__ == '__main__':
                                           sample_range=[np.nan, np.nan])
     landscape = vector_methods.Landscape(num_landscapes=5, resolution=100,
                                          sample_range=[np.nan, np.nan])
-    plt.figure()
-    plt.plot(betti_seq(i00[:-1]), 'k', alpha=0.6, label="Regular B0")
-    plt.plot(betti_seq(i10[:-1]), 'b', alpha=0.6, label="Random B0")
-    plt.legend()
+    fig = plt.figure(figsize=(10, 10))
+    ax = fig.add_subplot(221)
+    ax.plot(betti_seq(i00[:-1]), 'k', alpha=0.6, label="Regular B0")
+    ax.plot(betti_seq(i10[:-1]), 'b', alpha=0.6, label="Random B0")
+    ax.legend()
 
-    plt.figure()
-    plt.plot(betti_seq(i01[:-1]), 'k', alpha=0.6, label="Regular B1")
-    plt.plot(betti_seq(i11[:-1]), 'b', alpha=0.6, label="Random B1")
-    plt.legend()
+    ax = fig.add_subplot(222)
+    ax.plot(betti_seq(i01[:-1]), 'k', alpha=0.6, label="Regular B1")
+    ax.plot(betti_seq(i11[:-1]), 'b', alpha=0.6, label="Random B1")
+    ax.legend()
 
-    plt.figure()
-    plt.plot(landscape(i00[:-1]), 'k', alpha=0.6, label="Regular Landscape 0")
-    plt.plot(landscape(i10[:-1]), 'b', alpha=0.6, label="Random Landscape 0")
-    plt.legend()
+    ax = fig.add_subplot(223)
+    ax.plot(landscape(i00[:-1]), 'k', alpha=0.6, label="Regular Landscape 0")
+    ax.plot(landscape(i10[:-1]), 'b', alpha=0.6, label="Random Landscape 0")
+    ax.legend()
 
-    plt.figure()
-    plt.plot(landscape(i01[:-1]), 'k', alpha=0.6, label="Regular Landscape 1")
-    plt.plot(landscape(i11[:-1]), 'b', alpha=0.6, label="Random Landscape 1")
-    plt.legend()
-
-    # plt.scatter(cp[:, 0], cp[:, 1])
-
+    ax = fig.add_subplot(224)
+    ax.plot(landscape(i01[:-1]), 'k', alpha=0.6, label="Regular Landscape 1")
+    ax.plot(landscape(i11[:-1]), 'b', alpha=0.6, label="Random Landscape 1")
+    ax.legend()
+    plt.savefig("experiment-2d-betty.pdf")
     # clustering = SpectralClustering(n_clusters=2,
     #                                 assign_labels='discretize').fit(cp)
     # print(clustering.labels_)
-    # dgm(cp)
-    # plt.figure()
-    # geometry_score(cp)
     plt.show()
