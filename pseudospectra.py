@@ -93,7 +93,26 @@ def gram_psa():
     ax = fig.add_subplot(122)
     som = np.load("./data/experiment-2-random.npy")
     ps_on_gram(som, samples, ax)
-    # plt.savefig("experiment-2-gram.pdf")
+    plt.savefig("experiment-2-gram.pdf")
+
+    n = 50_000
+    X = np.random.uniform(0, 1, n)
+    Y = np.random.uniform(0, 1, n)
+    holes = 64
+    for i in range(holes):
+        x, y = np.random.uniform(0.1, 0.9, 2)
+        r = 0.1 * np.random.uniform(0, 1)
+        idx = ((X-x)**2 + (Y-y)**2) > r*r
+        X, Y = X[idx], Y[idx]
+    X = np.c_[X, Y]
+    fig = plt.figure(figsize=(13, 7))
+    ax = fig.add_subplot(121)
+    som = np.load("./data/experiment-2-bis-regular.npy")
+    ps_on_gram(som, samples, ax)
+    ax = fig.add_subplot(122)
+    som = np.load("./data/experiment-2-bis-random.npy")
+    ps_on_gram(som, samples, ax)
+    plt.savefig("experiment-2-bis-gram.pdf")
 
     samples = np.random.uniform(0, 1, (n_samples, 3))
     fig = plt.figure(figsize=(13, 7))
@@ -103,7 +122,7 @@ def gram_psa():
     ax = fig.add_subplot(122)
     som = np.load("./data/experiment-3-random.npy")
     ps_on_gram(som, samples, ax)
-    # plt.savefig("experiment-3-gram.pdf")
+    plt.savefig("experiment-3-gram.pdf")
 
 
 def eigvals_distribution(regular_codebook, random_codebook, ax, case='1d'):
@@ -117,6 +136,17 @@ def eigvals_distribution(regular_codebook, random_codebook, ax, case='1d'):
             T = np.random.uniform(0.0, 2.0*np.pi, 50)
             R = np.sqrt(np.random.uniform(0.50**2, 1.0**2, 50))
             samples = 0.5 + np.c_[R*np.cos(T), R*np.sin(T)]/2
+        elif case == '2dbis':
+            n = 100
+            X = np.random.uniform(0, 1, n)
+            Y = np.random.uniform(0, 1, n)
+            holes = 64
+            for i in range(holes):
+                x, y = np.random.uniform(0.1, 0.9, 2)
+                r = 0.1 * np.random.uniform(0, 1)
+                Inp = ((X-x)**2 + (Y-y)**2) > r*r
+                X, Y = X[Inp], Y[Inp]
+            samples = np.c_[X, Y]
         else:
             samples = np.random.uniform(0, 1, (50, 3))
         Xreg = activation(regular_codebook, samples)
@@ -148,6 +178,13 @@ def eigs():
     som_random = np.load("./data/experiment-2-random.npy")
     eigvals_distribution(som_regular, som_random, ax, case='2d')
     plt.savefig("experiment-2-eigs.pdf")
+
+    fig = plt.figure(figsize=(10, 10))
+    ax = fig.add_subplot(111)
+    som_regular = np.load("./data/experiment-2-bis-regular.npy")
+    som_random = np.load("./data/experiment-2-bis-random.npy")
+    eigvals_distribution(som_regular, som_random, ax, case='2dbis')
+    plt.savefig("experiment-2-bis-eigs.pdf")
 
     fig = plt.figure(figsize=(10, 10))
     ax = fig.add_subplot(111)
