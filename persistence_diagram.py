@@ -41,12 +41,12 @@ def dgm(data):
 
 if __name__ == '__main__':
     # cp = gs.circle(10)
-    cp = np.load("./data/experiment-2-regular.npy")[:512, :]
+    cp = np.load("./data/experiment-2-bis-regular.npy")[:512, :]
     bc0, i00, i01, _ = dgm(cp)
 
     # cp = np.array([[.2, .2], [.4, .2], [.2, .3], [1.7, 2], [1, .9], [.8, .8],
     #                [.7, .9], [1.1, .9]])
-    cp = np.load("./data/experiment-2-random.npy")[:512, :]
+    cp = np.load("./data/experiment-2-bis-random.npy")[:512, :]
     bc1, i10, i11, _ = dgm(cp)
 
     print(gd.bottleneck_distance(i00, i10))
@@ -76,7 +76,7 @@ if __name__ == '__main__':
     ax.plot(landscape(i01[:-1]), 'k', alpha=0.6, label="Regular Landscape 1")
     ax.plot(landscape(i11[:-1]), 'b', alpha=0.6, label="Random Landscape 1")
     ax.legend()
-    plt.savefig("experiment-2d-betty.pdf")
+    plt.savefig("experiment-2d-bis-betty.pdf")
     # clustering = SpectralClustering(n_clusters=2,
     #                                 assign_labels='discretize').fit(cp)
     # print(clustering.labels_)
