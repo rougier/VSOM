@@ -210,27 +210,20 @@ the process of inflating balls continuous. The radius of the balls,
 $\alpha$, is called the ``persistence'' parameter and the previously described 
 process of inflating balls around our data point builds a diagram 
 called ``persistence'' diagram (and the persistence barcode). 
+We focus our analysis more on the two first homology groups, which are:
+$H_0$, which describes the path-connected components of a topological space 
+$\mathcal{X}$ (homeomorphic to a point), and $H_1$ that defines the 
+one-dimensional holes (homeomorphic to circle).
 
-
-First we briefly describe the terms of homology and persistence homology and 
-how we can use them to obtain some useful information regarding the topological
-structure of our data. For simplicity (and lack of space) we omit the formal
-definition of homology. However, the properties of homology are of some
-interest to us. Therefore assume that $X$ is any topological space. The $i$-th
-homology group, $H_i$, describe the topological invariant sets of $X$. The 
-number of $i$-dimensional invariant in $X$ reflects the rank of $H_i$ and
-it is named \emph{Betti} number, $\beta_i$.
-
-The
-three first homology groups are related to:
-\begin{itemize}
-    \item $H_0$ describes the path-connected components of $X$ (homeomorphic to
-        point),
-    \item $H_1$ defines the one-dimensional holes (homeomorphic to circle),
-    \item $H_3$ describes the two-dimensional holes (homeomorphic to sphere).
-\end{itemize}
-In our analysis we will focus only on the first two homology groups. 
-
+Persistence indicates which topological features (holes) persist more as 
+we vary the persistence parameter $\alpha$ (radius). Features that last long
+enough (they persist under many increases of the parameter $\alpha$) are
+considered to be significant. In this work we drop the mathematical definitions
+since they are out of context and we only use the persistent diagrams for 
+analyzing our results (we refer the reader
+to~\cite{chazal:2017,ghrist:2008,zomorodian:2005} for a rigorous mathematical
+introduction to Topological Data Analysis). For our analysis we use the Python
+programming language and the Gudhi library~\cite{maria:2014}.
 
 \begin{figure}[!htpb]
      \centering
@@ -245,5 +238,8 @@ In our analysis we will focus only on the first two homology groups.
      \caption{Experiment $2$--$2$D random distribution with holes.}%
      \label{Fig:persistence_exp2b}
 \end{figure}
+
+\bibliographystyle{apalike}
+\bibliography{biblio}
 
 \end{document}
