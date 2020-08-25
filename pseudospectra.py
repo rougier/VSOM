@@ -1,5 +1,4 @@
 import numpy as np
-import matplotlib
 import matplotlib.pylab as plt
 from forbiddenfruit import curse
 from sklearn.neighbors import KernelDensity
@@ -8,8 +7,6 @@ from scipy.stats import wasserstein_distance
 from rectpsa import psa
 
 curse(np.ndarray, 'H', property(fget=lambda A: A.conj().T))
-
-matplotlib.use('Agg')
 
 
 def check_normality(X):
@@ -127,8 +124,17 @@ def gram_psa():
     plt.savefig("./data/experiment-3-psa.pdf")
 
 
+def make_list_equal_size(in_list):
+    lens = [len(i) for i in in_list]
+    max_len = max(lens)
+    out_array = np.zeros((len(lens), max_len))
+    for i, tmp_list in enumerate(in_list):
+        out_array[i, :lens[i]] = tmp_list
+    return out_array
+
+
 def eigvals_distribution(regular_codebook, random_codebook, ax, case='1d'):
-    nsamples, ensemble_size = 100, 500
+    nsamples, ensemble_size = 50, 200
     regular = []
     random = []
     for i in range(ensemble_size):
@@ -158,65 +164,95 @@ def eigvals_distribution(regular_codebook, random_codebook, ax, case='1d'):
         wran, _ = np.linalg.eig(Gran)
         regular.append(wreg.real)
         random.append(wran.real)
+    if case == '2dbis':
+        regular = make_list_equal_size(regular)
+        random = make_list_equal_size(random)
     regular = np.array(regular).flatten().reshape(-1, 1)
     random = np.array(random).flatten().reshape(-1, 1)
-    kde_re = KernelDensity(kernel='gaussian', bandwidth=.2).fit(regular)
-    kde_ra = KernelDensity(kernel='gaussian', bandwidth=.2).fit(random)
+    kde_re = KernelDensity(kernel='gaussian', bandwidth=.4).fit(regular)
+    kde_ra = KernelDensity(kernel='gaussian', bandwidth=.4).fit(random)
     X = np.linspace(-50, 30000, 1000)
     X = X[:, np.newaxis]
-    if case == '2dbis':
-        # ax.hist(regular, bins=30, alpha=0.6, label="Regular",
-        #         density=True)
-        # ax.hist(random, bins=30, alpha=0.6, label="Random",
-        #         density=True)
-        ax.plot(np.exp(kde_re.score_samples(X)), 'b', lw=2, label='Regular')
-        ax.plot(np.exp(kde_ra.score_samples(X)), 'k', lw=2, label='Random')
-        ax.legend()
-    else:
-        P = np.exp(kde_re.score_samples(X))
-        Q = np.exp(kde_ra.score_samples(X))
-        ax.plot(P, 'b', lw=2, label='Regular')
-        ax.plot(Q, 'k', lw=2, label='Random')
-        w = wasserstein_distance(P, Q)
-        ax.set_title(str(w))
-        # ax.hist(regular, bins=30, color='blue', alpha=0.6, label="Regular",
-        #         density=True)
-        # ax.hist(random, bins=30, color='black', alpha=0.6, label="Random",
-        #         density=True)
-        ax.legend()
+    P = np.exp(kde_re.score_samples(X))
+    Q = np.exp(kde_ra.score_samples(X))
+    ax.plot(P, 'b', lw=2, label='Regular (P)')
+    ax.plot(Q, 'k', lw=2, label='Random (Q)')
+    w = np.round(wasserstein_distance(P, Q), 7)
+    ax.set_title(r"$W(P, Q) = $"+str(w), fontsize=16, weight='bold')
+    ax.legend()
 
 
 def eigs():
-    fig = plt.figure(figsize=(10, 10))
-    ax = fig.add_subplot(111)
+    fig = plt.figure(figsize=(14, 14))
+    fig.subplots_adjust(wspace=0.4, hspace=0.4)
+
+    ax = fig.add_subplot(221)
     som_regular = np.load("./data/experiment-1-regular.npy")
     som_random = np.load("./data/experiment-1-random.npy")
     eigvals_distribution(som_regular, som_random, ax, case='1d')
-    plt.savefig("./data/experiment-1-eigs.pdf")
+    ticks = ax.get_xticks().astype('i')
+    ax.set_xticklabels(ticks, fontsize=16, weight='bold')
+    ticks = np.round(ax.get_yticks(), 4)
+    ax.set_yticklabels(ticks, fontsize=16, weight='bold')
+    ax.set_xlim([0, 500])
+    ax.set_ylim([0, 0.0003])
+    ax.text(0, 0.00032, 'A',
+            va='top',
+            ha='left',
+            fontsize=16,
+            weight='bold')
 
-    fig = plt.figure(figsize=(10, 10))
-    ax = fig.add_subplot(111)
+    ax = fig.add_subplot(222)
     som_regular = np.load("./data/experiment-2-regular.npy")
     som_random = np.load("./data/experiment-2-random.npy")
     eigvals_distribution(som_regular, som_random, ax, case='2d')
-    plt.savefig("./data/experiment-2-eigs.pdf")
+    ax.set_xlim([0, 300])
+    ax.set_ylim([0, 0.001])
+    ticks = ax.get_xticks().astype('i')
+    ax.set_xticklabels(ticks, fontsize=16, weight='bold')
+    ticks = np.round(ax.get_yticks(), 4)
+    ax.set_yticklabels(ticks, fontsize=16, weight='bold')
+    ax.text(0, 0.00105, 'B',
+            va='top',
+            ha='left',
+            fontsize=16,
+            weight='bold')
 
-    # fig = plt.figure(figsize=(10, 10))
-    # ax = fig.add_subplot(111)
-    # som_regular = np.load("./data/experiment-2-bis-regular.npy")
-    # som_random = np.load("./data/experiment-2-bis-random.npy")
-    # eigvals_distribution(som_regular, som_random, ax, case='2dbis')
-    # plt.savefig("./data/experiment-2-bis-eigs.pdf")
+    ax = fig.add_subplot(223)
+    som_regular = np.load("./data/experiment-2-bis-regular.npy")
+    som_random = np.load("./data/experiment-2-bis-random.npy")
+    eigvals_distribution(som_regular, som_random, ax, case='2dbis')
+    ax.set_xlim([0, 300])
+    ax.set_ylim([0, 0.0003])
+    ticks = ax.get_xticks().astype('i')
+    ax.set_xticklabels(ticks, fontsize=16, weight='bold')
+    ticks = np.round(ax.get_yticks(), 4)
+    ax.set_yticklabels(ticks, fontsize=16, weight='bold')
+    ax.text(0, 0.00032, 'C',
+            va='top',
+            ha='left',
+            fontsize=16,
+            weight='bold')
 
-    fig = plt.figure(figsize=(10, 10))
-    ax = fig.add_subplot(111)
+    ax = fig.add_subplot(224)
     som_regular = np.load("./data/experiment-3-regular.npy")
     som_random = np.load("./data/experiment-3-random.npy")
     eigvals_distribution(som_regular, som_random, ax, case='3d')
-    plt.savefig("./data/experiment-3-eigs.pdf")
+    ax.set_xlim([0, 300])
+    ax.set_ylim([0, 0.001])
+    ticks = ax.get_xticks().astype('i')
+    ax.set_xticklabels(ticks, fontsize=16, weight='bold')
+    ticks = np.round(ax.get_yticks(), 4)
+    ax.set_yticklabels(ticks, fontsize=16, weight='bold')
+    ax.text(0, 0.00105, 'D',
+            va='top',
+            ha='left',
+            fontsize=16,
+            weight='bold')
+    plt.savefig("./figures/eig-distributions.pdf", axis='tight')
 
 
 if __name__ == '__main__':
     # gram_psa()
     eigs()
-    # plt.show()
+    plt.show()

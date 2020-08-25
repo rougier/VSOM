@@ -1,9 +1,10 @@
 import numpy as np
 import gudhi as gd
-from gudhi.representations import vector_methods
+import matplotlib
 import matplotlib.pylab as plt
+from gudhi.representations import vector_methods
 
-# from sklearn.cluster import SpectralClustering
+matplotlib.use('Agg')
 
 
 def disc(n_points=20):
@@ -15,69 +16,151 @@ def disc(n_points=20):
     return data
 
 
-def dgm(data):
+def dgm(data, is_alpha_simplex_on=False):
     cp = data.tolist()
-    # skeleton = gd.AlphaComplex(points=cp)
-    # alpha_simplex_tree = skeleton.create_simplex_tree()
-    # bar_codes = alpha_simplex_tree.persistence()
-    # dim0 = alpha_simplex_tree.persistence_intervals_in_dimension(0)
-    # dim1 = alpha_simplex_tree.persistence_intervals_in_dimension(1)
-    # dim2 = alpha_simplex_tree.persistence_intervals_in_dimension(2)
-    skeleton = gd.RipsComplex(points=cp, max_edge_length=1.3)
-    rips_simplex_tree = skeleton.create_simplex_tree(max_dimension=2)
-    bar_codes = rips_simplex_tree.persistence()
-    dim0 = rips_simplex_tree.persistence_intervals_in_dimension(0)
-    dim1 = rips_simplex_tree.persistence_intervals_in_dimension(1)
-    dim2 = rips_simplex_tree.persistence_intervals_in_dimension(2)
-
-    fig = plt.figure(figsize=(13, 7))
-    ax = fig.add_subplot(121)
-    gd.plot_persistence_barcode(bar_codes, axes=ax)
-    ax.set_xlim([0, 2])
-    ax = fig.add_subplot(122)
-    gd.plot_persistence_diagram(bar_codes, axes=ax, greyblock=False)
+    if is_alpha_simplex_on:
+        skeleton = gd.AlphaComplex(points=cp)
+        alpha_simplex_tree = skeleton.create_simplex_tree()
+        bar_codes = alpha_simplex_tree.persistence()
+        dim0 = alpha_simplex_tree.persistence_intervals_in_dimension(0)
+        dim1 = alpha_simplex_tree.persistence_intervals_in_dimension(1)
+        dim2 = alpha_simplex_tree.persistence_intervals_in_dimension(2)
+    else:
+        skeleton = gd.RipsComplex(points=cp, max_edge_length=1.3)
+        rips_simplex_tree = skeleton.create_simplex_tree(max_dimension=2)
+        bar_codes = rips_simplex_tree.persistence()
+        dim0 = rips_simplex_tree.persistence_intervals_in_dimension(0)
+        dim1 = rips_simplex_tree.persistence_intervals_in_dimension(1)
+        dim2 = rips_simplex_tree.persistence_intervals_in_dimension(2)
     return bar_codes, dim0, dim1, dim2
 
 
-if __name__ == '__main__':
-    # cp = gs.circle(10)
-    cp = np.load("./data/experiment-2-bis-regular.npy")[:512, :]
-    bc0, i00, i01, _ = dgm(cp)
+def run_pd(dataX, dataY, dataZ, case='Persistence Homology'):
+    bcX, iX0, iX1, _ = dgm(dataX)
+    bcY, iY0, iY1, _ = dgm(dataY)
+    bcZ, iZ0, iZ1, _ = dgm(dataZ)
 
-    # cp = np.array([[.2, .2], [.4, .2], [.2, .3], [1.7, 2], [1, .9], [.8, .8],
-    #                [.7, .9], [1.1, .9]])
-    cp = np.load("./data/experiment-2-bis-random.npy")[:512, :]
-    bc1, i10, i11, _ = dgm(cp)
+    print(30*"*")
+    print("Regular Bottleneck DH0: ", gd.bottleneck_distance(iX0, iY0))
+    print("Random Bottleneck DH0: ", gd.bottleneck_distance(iX0, iZ0))
 
-    print(gd.bottleneck_distance(i00, i10))
-    print(gd.bottleneck_distance(i01, i11))
+    print("Regular Bottleneck DH1: ", gd.bottleneck_distance(iX1, iY1))
+    print("Random Bottleneck DH1: ", gd.bottleneck_distance(iX1, iZ1))
 
+    print("Regular Wasserstein DH0: ", gd.hera.wasserstein_distance(iX0, iY0))
+    print("Random Wasserstein DH0: ", gd.hera.wasserstein_distance(iX0, iZ0))
+
+    print("Regular Wasserstein DH1: ", gd.hera.wasserstein_distance(iX1, iY1))
+    print("Random Wasserstein DH1: ", gd.hera.wasserstein_distance(iX1, iZ1))
+    print(30*"*")
+
+    fig = plt.figure(figsize=(16, 11))
+    fig.suptitle(case, fontsize=18, weight='bold')
+    ax1 = fig.add_subplot(231)
+    gd.plot_persistence_barcode(bcX, axes=ax1)
+    ax1.set_title("")
+    ax1.set_xlim(0, .6)
+    ax1.set_xlabel(r"$\alpha$", fontsize=21, weight='bold')
+
+    ax2 = fig.add_subplot(232)
+    gd.plot_persistence_barcode(bcY, axes=ax2)
+    ax2.set_title("")
+    ax2.set_xlim(0, .6)
+    ax2.set_xlabel(r"$\alpha$", fontsize=21, weight='bold')
+
+    ax3 = fig.add_subplot(233)
+    gd.plot_persistence_barcode(bcZ, axes=ax3)
+    ax3.set_title("")
+    ax3.set_xlim(0, .6)
+    ax3.set_xlabel(r"$\alpha$", fontsize=21, weight='bold')
+
+    ax4 = fig.add_subplot(234)
+    gd.plot_persistence_diagram(bcX, axes=ax4, greyblock=False, legend=True,
+                                fontsize=21)
+    ax4.set_title("")
+    ticks = np.round(ax4.get_xticks(), 2)
+    ax4.set_xticklabels(ticks, fontsize=18, weight='bold')
+
+    ax5 = fig.add_subplot(235)
+    gd.plot_persistence_diagram(bcY, axes=ax5, greyblock=False, legend=True,
+                                fontsize=21)
+    ticks = np.round(ax5.get_xticks(), 2)
+    ax5.set_xticklabels(ticks, fontsize=18, weight='bold')
+    ax5.set_ylabel("")
+    ax5.set_title("")
+
+    ax6 = fig.add_subplot(236)
+    gd.plot_persistence_diagram(bcZ, axes=ax6, greyblock=False, legend=True,
+                                fontsize=21)
+    ticks = np.round(ax6.get_xticks(), 2)
+    ax6.set_xticklabels(ticks, fontsize=18, weight='bold')
+    ax6.set_title("")
+    ax6.set_ylabel("")
+
+    return iX0, iX1, iY0, iY1, iZ0, iZ1
+
+
+def run_betti(iX0, iX1, iY0, iY1):
     betti_seq = vector_methods.BettiCurve(resolution=100,
                                           sample_range=[np.nan, np.nan])
     landscape = vector_methods.Landscape(num_landscapes=5, resolution=100,
                                          sample_range=[np.nan, np.nan])
+
     fig = plt.figure(figsize=(10, 10))
     ax = fig.add_subplot(221)
-    ax.plot(betti_seq(i00[:-1]), 'k', alpha=0.6, label="Regular B0")
-    ax.plot(betti_seq(i10[:-1]), 'b', alpha=0.6, label="Random B0")
+    ax.plot(betti_seq(iX0[:-1]), 'k', alpha=0.6, label="Regular B0")
+    ax.plot(betti_seq(iY0[:-1]), 'b', alpha=0.6, label="Random B0")
     ax.legend()
 
     ax = fig.add_subplot(222)
-    ax.plot(betti_seq(i01[:-1]), 'k', alpha=0.6, label="Regular B1")
-    ax.plot(betti_seq(i11[:-1]), 'b', alpha=0.6, label="Random B1")
+    ax.plot(betti_seq(iX1[:-1]), 'k', alpha=0.6, label="Regular B1")
+    ax.plot(betti_seq(iY1[:-1]), 'b', alpha=0.6, label="Random B1")
     ax.legend()
 
     ax = fig.add_subplot(223)
-    ax.plot(landscape(i00[:-1]), 'k', alpha=0.6, label="Regular Landscape 0")
-    ax.plot(landscape(i10[:-1]), 'b', alpha=0.6, label="Random Landscape 0")
+    ax.plot(landscape(iX0[:-1]), 'k', alpha=0.6, label="Regular Landscape 0")
+    ax.plot(landscape(iY0[:-1]), 'b', alpha=0.6, label="Random Landscape 0")
     ax.legend()
 
     ax = fig.add_subplot(224)
-    ax.plot(landscape(i01[:-1]), 'k', alpha=0.6, label="Regular Landscape 1")
-    ax.plot(landscape(i11[:-1]), 'b', alpha=0.6, label="Random Landscape 1")
+    ax.plot(landscape(iX1[:-1]), 'k', alpha=0.6, label="Regular Landscape 1")
+    ax.plot(landscape(iY1[:-1]), 'b', alpha=0.6, label="Random Landscape 1")
     ax.legend()
-    plt.savefig("experiment-2d-bis-betty.pdf")
-    # clustering = SpectralClustering(n_clusters=2,
-    #                                 assign_labels='discretize').fit(cp)
-    # print(clustering.labels_)
-    plt.show()
+
+
+if __name__ == '__main__':
+    base = "Experiment "
+    cases = ["2 - Annulus", "2b - Holes", "3 - Uniform Cube"]
+    np.random.seed(1)
+    dataY = np.load("./data/experiment-2-regular.npy")
+    dataZ = np.load("./data/experiment-2-random.npy")
+    n_samples = dataY.shape[0]
+    dataX = np.random.uniform(0, 1, (n_samples, 2))
+    run_pd(dataX, dataY, dataZ, case=base+cases[0])
+    plt.savefig("./figures/experiment-2-pd.pdf", axis='tight')
+
+    # np.random.seed(12345)
+    # dataY = np.load("./data/experiment-2-bis-regular.npy")
+    # dataZ = np.load("./data/experiment-2-bis-random.npy")
+    # n_samples = dataY.shape[0]
+    # X = np.random.uniform(0, 1, n_samples)
+    # Y = np.random.uniform(0, 1, n_samples)
+    # holes = 64
+    # for i in range(holes):
+    #     x, y = np.random.uniform(0.1, 0.9, 2)
+    #     r = 0.1 * np.random.uniform(0, 1)
+    #     ind = ((X-x)**2 + (Y-y)**2) > r*r
+    #     X, Y = X[ind], Y[ind]
+    # dataX = np.c_[X, Y]
+    # run_pd(dataX, dataY, dataZ, case=base+cases[1])
+    # plt.savefig("./figures/experiment-2-bis-pd.pdf", axis='tight')
+
+    # np.random.seed(1)
+    # dataY = np.load("./data/experiment-3-regular.npy")
+    # print(dataY.shape)
+    # dataZ = np.load("./data/experiment-3-random.npy")
+    # n_samples = dataY.shape[0]
+    # dataX = np.random.uniform(0, 1, (n_samples, 3))
+    # run_pd(dataX, dataY, dataZ, case=base+cases[2])
+    # plt.savefig("./figures/experiment-3-pd.pdf", axis='tight')
+    # plt.show()
