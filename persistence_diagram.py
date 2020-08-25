@@ -131,13 +131,13 @@ def run_betti(iX0, iX1, iY0, iY1):
 if __name__ == '__main__':
     base = "Experiment "
     cases = ["2 - Annulus", "2b - Holes", "3 - Uniform Cube"]
-    np.random.seed(1)
-    dataY = np.load("./data/experiment-2-regular.npy")
-    dataZ = np.load("./data/experiment-2-random.npy")
-    n_samples = dataY.shape[0]
-    dataX = np.random.uniform(0, 1, (n_samples, 2))
-    run_pd(dataX, dataY, dataZ, case=base+cases[0])
-    plt.savefig("./figures/experiment-2-pd.pdf", axis='tight')
+    # np.random.seed(1)
+    # dataY = np.load("./data/experiment-2-regular.npy")
+    # dataZ = np.load("./data/experiment-2-random.npy")
+    # n_samples = dataY.shape[0]
+    # dataX = np.random.uniform(0, 1, (n_samples, 2))
+    # run_pd(dataX, dataY, dataZ, case=base+cases[0])
+    # plt.savefig("./figures/experiment-2-pd.pdf", axis='tight')
 
     # np.random.seed(12345)
     # dataY = np.load("./data/experiment-2-bis-regular.npy")
@@ -155,12 +155,12 @@ if __name__ == '__main__':
     # run_pd(dataX, dataY, dataZ, case=base+cases[1])
     # plt.savefig("./figures/experiment-2-bis-pd.pdf", axis='tight')
 
-    # np.random.seed(1)
-    # dataY = np.load("./data/experiment-3-regular.npy")
-    # print(dataY.shape)
-    # dataZ = np.load("./data/experiment-3-random.npy")
-    # n_samples = dataY.shape[0]
-    # dataX = np.random.uniform(0, 1, (n_samples, 3))
-    # run_pd(dataX, dataY, dataZ, case=base+cases[2])
-    # plt.savefig("./figures/experiment-3-pd.pdf", axis='tight')
+    np.random.seed(1)
+    dataY = np.load("./data/experiment-3-regular.npy")
+    print(dataY.shape)
+    dataZ = np.load("./data/experiment-3-random.npy")
+    n_samples = dataY.shape[0]
+    dataX = np.random.uniform(0, 1, (n_samples, 3))
+    run_pd(dataX, dataY, dataZ, case=base+cases[2])
+    plt.savefig("./figures/experiment-3-pd.pdf", axis='tight')
     # plt.show()

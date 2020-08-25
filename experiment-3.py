@@ -14,7 +14,7 @@ if __name__ == '__main__':
 
     seed = 1
     topology = "regular"
-    n_unit = 4096
+    n_unit = 1024
     n_samples = 50000
     n_neighbor = 2
     n_epochs = 25000
@@ -55,7 +55,7 @@ if __name__ == '__main__':
         plot.letter(ax, chr(ord("C")+i))
     plt.tight_layout()
 
-    # np.save("./data/experiment-3-regular", som.codebook['X'])
+    np.save("./data/experiment-3-regular", som.codebook['X'])
 
     # plt.savefig("experiment-3.pdf", dpi=300)
     plt.show()
