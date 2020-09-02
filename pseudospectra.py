@@ -1,3 +1,4 @@
+import mnist
 import numpy as np
 import matplotlib.pylab as plt
 from forbiddenfruit import curse
@@ -137,6 +138,8 @@ def eigvals_distribution(regular_codebook, random_codebook, ax, case='1d'):
     nsamples, ensemble_size = 50, 200
     regular = []
     random = []
+    mnistX, _ = mnist.read("training")
+    mnistX = mnistX.reshape(-1, 28*28)
     for i in range(ensemble_size):
         if case == '1d':
             samples = np.random.uniform(0, 1, (nsamples, ))
@@ -154,6 +157,10 @@ def eigvals_distribution(regular_codebook, random_codebook, ax, case='1d'):
                 Inp = ((X-x)**2 + (Y-y)**2) > r*r
                 X, Y = X[Inp], Y[Inp]
             samples = np.c_[X, Y]
+        elif case == '4d':
+            idx = np.arange(mnistX.shape[0])
+            idx = np.random.choice(idx, nsamples)
+            samples = mnistX[idx]
         else:
             samples = np.random.uniform(0, 1, (nsamples, 3))
         Xreg = activation(regular_codebook, samples)
@@ -187,22 +194,6 @@ def eigs():
     fig.subplots_adjust(wspace=0.4, hspace=0.4)
 
     ax = fig.add_subplot(221)
-    som_regular = np.load("./data/experiment-1-regular.npy")
-    som_random = np.load("./data/experiment-1-random.npy")
-    eigvals_distribution(som_regular, som_random, ax, case='1d')
-    ticks = ax.get_xticks().astype('i')
-    ax.set_xticklabels(ticks, fontsize=16, weight='bold')
-    ticks = np.round(ax.get_yticks(), 4)
-    ax.set_yticklabels(ticks, fontsize=16, weight='bold')
-    ax.set_xlim([0, 500])
-    ax.set_ylim([0, 0.0003])
-    ax.text(0, 0.00032, 'A',
-            va='top',
-            ha='left',
-            fontsize=16,
-            weight='bold')
-
-    ax = fig.add_subplot(222)
     som_regular = np.load("./data/experiment-2-regular.npy")
     som_random = np.load("./data/experiment-2-random.npy")
     eigvals_distribution(som_regular, som_random, ax, case='2d')
@@ -218,7 +209,7 @@ def eigs():
             fontsize=16,
             weight='bold')
 
-    ax = fig.add_subplot(223)
+    ax = fig.add_subplot(222)
     som_regular = np.load("./data/experiment-2-bis-regular.npy")
     som_random = np.load("./data/experiment-2-bis-random.npy")
     eigvals_distribution(som_regular, som_random, ax, case='2dbis')
@@ -234,7 +225,7 @@ def eigs():
             fontsize=16,
             weight='bold')
 
-    ax = fig.add_subplot(224)
+    ax = fig.add_subplot(223)
     som_regular = np.load("./data/experiment-3-regular.npy")
     som_random = np.load("./data/experiment-3-random.npy")
     eigvals_distribution(som_regular, som_random, ax, case='3d')
@@ -245,6 +236,22 @@ def eigs():
     ticks = np.round(ax.get_yticks(), 4)
     ax.set_yticklabels(ticks, fontsize=16, weight='bold')
     ax.text(0, 0.00105, 'D',
+            va='top',
+            ha='left',
+            fontsize=16,
+            weight='bold')
+
+    ax = fig.add_subplot(224)
+    som_regular = np.load("./data/experiment-4-regular.npy")
+    som_random = np.load("./data/experiment-4-random.npy")
+    eigvals_distribution(som_regular, som_random, ax, case='4d')
+    ticks = ax.get_xticks().astype('i')
+    ax.set_xticklabels(ticks, fontsize=16, weight='bold')
+    ticks = np.round(ax.get_yticks(), 4)
+    ax.set_yticklabels(ticks, fontsize=16, weight='bold')
+    ax.set_xlim([0, 500])
+    ax.set_ylim([0, 0.0003])
+    ax.text(0, 0.00032, 'A',
             va='top',
             ha='left',
             fontsize=16,

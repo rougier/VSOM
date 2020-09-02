@@ -54,5 +54,6 @@ if __name__ == '__main__':
         plot.activation(ax, som, np.array(x))
         plot.letter(ax, chr(ord("C")+i))
     plt.tight_layout()
-    plt.savefig("experiment-4.pdf", dpi=300)
+    # np.save("./data/experiment-4-random", som.codebook['X'])
+    # plt.savefig("experiment-4.pdf", dpi=300)
     plt.show()

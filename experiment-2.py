@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 if __name__ == '__main__':
 
     seed = 1
-    topology = "random"
+    topology = "regular"
     n_unit = 1024
     n_samples = 25000
     n_neighbor = 3
@@ -56,6 +56,6 @@ if __name__ == '__main__':
         plot.activation(ax, som, np.array(x))
         plot.letter(ax, chr(ord("C")+i))
     plt.tight_layout()
-    # np.save("./data/experiment-2-random", som.codebook['X'])
+    # np.save("./data/experiment-2-regular", som.codebook['X'])
     # plt.savefig("experiment-2.pdf")
     plt.show()

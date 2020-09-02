@@ -1,3 +1,4 @@
+# import mnist
 import numpy as np
 import gudhi as gd
 import matplotlib
@@ -27,6 +28,7 @@ def dgm(data, is_alpha_simplex_on=False):
         dim2 = alpha_simplex_tree.persistence_intervals_in_dimension(2)
     else:
         skeleton = gd.RipsComplex(points=cp, max_edge_length=1.3)
+        # skeleton = gd.RipsComplex(points=cp, max_edge_length=3.0)
         rips_simplex_tree = skeleton.create_simplex_tree(max_dimension=2)
         bar_codes = rips_simplex_tree.persistence()
         dim0 = rips_simplex_tree.persistence_intervals_in_dimension(0)
@@ -36,9 +38,9 @@ def dgm(data, is_alpha_simplex_on=False):
 
 
 def run_pd(dataX, dataY, dataZ, case='Persistence Homology'):
-    bcX, iX0, iX1, _ = dgm(dataX)
-    bcY, iY0, iY1, _ = dgm(dataY)
-    bcZ, iZ0, iZ1, _ = dgm(dataZ)
+    bcX, iX0, iX1, _ = dgm(dataX, is_alpha_simplex_on=False)
+    bcY, iY0, iY1, _ = dgm(dataY, is_alpha_simplex_on=False)
+    bcZ, iZ0, iZ1, _ = dgm(dataZ, is_alpha_simplex_on=False)
 
     print(30*"*")
     print("Regular Bottleneck DH0: ", gd.bottleneck_distance(iX0, iY0))
@@ -130,7 +132,7 @@ def run_betti(iX0, iX1, iY0, iY1):
 
 if __name__ == '__main__':
     base = "Experiment "
-    cases = ["2 - Annulus", "2b - Holes", "3 - Uniform Cube"]
+    cases = ["2 - Annulus", "2b - Holes", "3 - Uniform Cube", "4 - MNIST"]
     # np.random.seed(1)
     # dataY = np.load("./data/experiment-2-regular.npy")
     # dataZ = np.load("./data/experiment-2-random.npy")
@@ -163,4 +165,15 @@ if __name__ == '__main__':
     dataX = np.random.uniform(0, 1, (n_samples, 3))
     run_pd(dataX, dataY, dataZ, case=base+cases[2])
     plt.savefig("./figures/experiment-3-pd.pdf", axis='tight')
+
+    # np.random.seed(1)
+    # dataY = np.load("./data/experiment-4-regular.npy")
+    # dataZ = np.load("./data/experiment-4-random.npy")
+    # dataX, L = mnist.read("training")
+    # N = 1000
+    # index = np.random.choice(np.arange(0, 60000), N)
+    # dataX = dataX[index].reshape(N, 28*28)
+    # # dataX[dataX != 0] = 1
+    # run_pd(dataX, dataY, dataZ, case=base+cases[3])
+    # # plt.savefig("./figures/experiment-4-pd.pdf", axis='tight')
     # plt.show()
