@@ -41,12 +41,12 @@ if __name__ == '__main__':
     X, Y = mnist.read("testing")
     xshape, yshape = X.shape[1:], Y.shape[1:]
     X, Y = X.reshape(len(X),-1), Y.reshape(len(Y),-1)    
-    s = 0
+    O = np.zeros(len(X))
+    
     for i in tqdm.trange(len(X)):
         # Get index of nearest node (minimum distance)
         winner = np.argmin(((som.codebook['X'] - X[i])**2).sum(axis=-1))
         label = np.argmax(som.codebook['Y'][winner])
-        s += (label == np.argmax(Y[i]))
-    print("Recognition rate: {:.1f}%".format(100*s/len(X)))
+        O[i] = (label == np.argmax(Y[i]))
 
-
+    print("Recognition rate: {0:.3f} ± {1:.3f}".format(O.mean(), O.std()))
