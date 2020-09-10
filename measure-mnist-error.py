@@ -8,6 +8,12 @@ import som, mnist, plot
 import numpy as np
 import matplotlib.pyplot as plt
 
+# See https://doi.org/10.1016/j.patrec.2015.02.001 for reference
+
+# Semi-automatic ground truth generation using unsupervised clustering and
+# imited manual labeling: Application to handwritten character recognition
+# Szilárd Vajda, Yves Rangoni, Hubert Cecotti
+# Pattern Recognition Letters, Volume 58, 1 June 2015, Pages 23-28
 
 if __name__ == '__main__':
 
