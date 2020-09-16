@@ -164,7 +164,7 @@ if __name__ == '__main__':
     n_samples = dataY.shape[0]
     dataX = np.random.uniform(0, 1, (n_samples, 3))
     run_pd(dataX, dataY, dataZ, case=base+cases[2])
-    plt.savefig("./figures/experiment-3-pd.pdf", axis='tight')
+    # plt.savefig("./figures/experiment-3-pd.pdf", axis='tight')
 
     # np.random.seed(1)
     # dataY = np.load("./data/experiment-4-regular.npy")

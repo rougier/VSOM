@@ -135,7 +135,7 @@ def make_list_equal_size(in_list):
 
 
 def eigvals_distribution(regular_codebook, random_codebook, ax, case='1d'):
-    nsamples, ensemble_size = 50, 200
+    nsamples, ensemble_size = 200, 100
     regular = []
     random = []
     mnistX, _ = mnist.read("training")
@@ -176,9 +176,10 @@ def eigvals_distribution(regular_codebook, random_codebook, ax, case='1d'):
         random = make_list_equal_size(random)
     regular = np.array(regular).flatten().reshape(-1, 1)
     random = np.array(random).flatten().reshape(-1, 1)
-    kde_re = KernelDensity(kernel='gaussian', bandwidth=.4).fit(regular)
-    kde_ra = KernelDensity(kernel='gaussian', bandwidth=.4).fit(random)
-    X = np.linspace(-50, 30000, 1000)
+    kde_re = KernelDensity(kernel='gaussian', bandwidth=.1).fit(regular)
+    kde_ra = KernelDensity(kernel='gaussian', bandwidth=.1).fit(random)
+    # X = np.linspace(-50, 30000, 1000)
+    X = np.linspace(0, 10, 100)
     X = X[:, np.newaxis]
     P = np.exp(kde_re.score_samples(X))
     Q = np.exp(kde_ra.score_samples(X))
@@ -197,13 +198,13 @@ def eigs():
     som_regular = np.load("./data/experiment-2-regular.npy")
     som_random = np.load("./data/experiment-2-random.npy")
     eigvals_distribution(som_regular, som_random, ax, case='2d')
-    ax.set_xlim([0, 300])
-    ax.set_ylim([0, 0.001])
+    ax.set_xlim([0, 10])
+    ax.set_ylim([0, 3.5])
     ticks = ax.get_xticks().astype('i')
     ax.set_xticklabels(ticks, fontsize=16, weight='bold')
     ticks = np.round(ax.get_yticks(), 4)
     ax.set_yticklabels(ticks, fontsize=16, weight='bold')
-    ax.text(0, 0.00105, 'B',
+    ax.text(0, 3.8, 'A',
             va='top',
             ha='left',
             fontsize=16,
@@ -213,13 +214,13 @@ def eigs():
     som_regular = np.load("./data/experiment-2-bis-regular.npy")
     som_random = np.load("./data/experiment-2-bis-random.npy")
     eigvals_distribution(som_regular, som_random, ax, case='2dbis')
-    ax.set_xlim([0, 300])
-    ax.set_ylim([0, 0.0003])
+    ax.set_xlim([0, 10])
+    ax.set_ylim([0, 3.5])
     ticks = ax.get_xticks().astype('i')
     ax.set_xticklabels(ticks, fontsize=16, weight='bold')
     ticks = np.round(ax.get_yticks(), 4)
     ax.set_yticklabels(ticks, fontsize=16, weight='bold')
-    ax.text(0, 0.00032, 'C',
+    ax.text(0, 3.8, 'B',
             va='top',
             ha='left',
             fontsize=16,
@@ -229,13 +230,13 @@ def eigs():
     som_regular = np.load("./data/experiment-3-regular.npy")
     som_random = np.load("./data/experiment-3-random.npy")
     eigvals_distribution(som_regular, som_random, ax, case='3d')
-    ax.set_xlim([0, 300])
-    ax.set_ylim([0, 0.001])
+    ax.set_xlim([0, 10])
+    ax.set_ylim([0, 3.5])
     ticks = ax.get_xticks().astype('i')
     ax.set_xticklabels(ticks, fontsize=16, weight='bold')
     ticks = np.round(ax.get_yticks(), 4)
     ax.set_yticklabels(ticks, fontsize=16, weight='bold')
-    ax.text(0, 0.00105, 'D',
+    ax.text(0, 3.8, 'C',
             va='top',
             ha='left',
             fontsize=16,
@@ -245,13 +246,13 @@ def eigs():
     som_regular = np.load("./data/experiment-4-regular.npy")
     som_random = np.load("./data/experiment-4-random.npy")
     eigvals_distribution(som_regular, som_random, ax, case='4d')
+    ax.set_xlim([0, 10])
+    ax.set_ylim([0, 3.5])
     ticks = ax.get_xticks().astype('i')
     ax.set_xticklabels(ticks, fontsize=16, weight='bold')
     ticks = np.round(ax.get_yticks(), 4)
     ax.set_yticklabels(ticks, fontsize=16, weight='bold')
-    ax.set_xlim([0, 500])
-    ax.set_ylim([0, 0.0003])
-    ax.text(0, 0.00032, 'A',
+    ax.text(0, 3.8, 'D',
             va='top',
             ha='left',
             fontsize=16,
