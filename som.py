@@ -80,7 +80,7 @@ class SOM:
 
         codebook = np.zeros(self.size, dtype= [("X", float, (n_features,)),
                                                ("Y", float, (n_targets,))])
-        codebook["X"] = np.random.uniform(0,1,codebook["X"].shape)
+        codebook["X"] = np.random.uniform(0, 1, codebook["X"].shape)
         
         t = np.linspace(0, 1, epochs)
         lrate = lrate[0]*(lrate[1]/lrate[0])**t
@@ -101,6 +101,8 @@ class SOM:
             # Move output towards label
             if Y is not None:
                 codebook['Y'] -= lrate[i]*G[...,np.newaxis]*(codebook['Y'] - Y[i])
+                # codebook['Y'][winner] += Y[i]
+                # codebook['Y'][winner] = 0.9*codebook['Y'][winner] + 0.1*Y[i]
 
         self.codebook = codebook
 

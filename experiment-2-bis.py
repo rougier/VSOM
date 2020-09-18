@@ -13,7 +13,7 @@ if __name__ == '__main__':
 
     seed       = 12345
     topology   = "random"
-    topology   = "regular"
+    # topology   = "regular"
     n_unit     = 256 #1024
     # n_samples  = 25000
     n_neighbor = 2
