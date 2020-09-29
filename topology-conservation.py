@@ -89,10 +89,18 @@ if __name__ == '__main__':
         # They can connect to an old node if it is really closer
         #  or they can connect to a new node it it is closer
         if i < len(P0):
+            # Because of internal tests (keeping old node or getting a new one)
+            # we cannot guarantee that the index of the new node is not alreay
+            # used and we thus test explicitely if we reach the right number.
+            # This is also the reason to use 2*n_neighbour instead of
+            # n_neighbour.
             count = 0
             for j0,j1 in zip( np.argsort(D0[i])[1:2*n_neighbour+1],
                               np.argsort(D1[i])[1:2*n_neighbour+1]):
-                # if D0[i,j0] < 0.85*D1[i,j0] or j1 > len(P0):
+                # This test make things works but it might be wrong It was
+                # initially a bug but alternatives don't look so good. Here we
+                # test if the length of the initial edge has grown by a given
+                # factor. If it has grown too muc, we choose a ne closest node
                 if j1 > len(P0) or D0[i,j0] < 0.85*D1[i,j0]:
                     j = j1
                 else:
@@ -105,6 +113,7 @@ if __name__ == '__main__':
                     break
 
         # New nodes
+        # These one have no neighbour yet and can thus connect to any node.
         else:
             for j in np.argsort(D1[i])[1:n_neighbour+1]:
                 C1[i,j] = 1
@@ -127,7 +136,7 @@ if __name__ == '__main__':
     # -------------------------------
     #  P0[:-n] : Initial state
     #  P2 : Final state
-    n = 25
+    n = 24
     P = P0[:-n].copy()
     for j in range(100): # Lloyd relaxation (100 iterations)
         V = voronoi(P, bbox=[0,1,0,1])
@@ -148,7 +157,7 @@ if __name__ == '__main__':
         count = 0
         for j0,j2 in zip( np.argsort(D0[i])[1:2*n_neighbour+1],
                           np.argsort(D2[i])[1:2*n_neighbour+1]):
-            if j0 > len(P2) or D2[i,j2] < 0.75*D2[i,j0]:
+            if j0 >= len(P2) or D0[i,j0] < 0.75*D2[i,j0]:
                 j = j2
             else:
                 j = j0
