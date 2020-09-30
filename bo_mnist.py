@@ -25,10 +25,10 @@ def mnist_cost(x):
     sigma0 = x[:, 2]
     sigmaf = x[:, 3]
 
-    seed = None
+    seed = 123
     topology = "random"
     topology = "regular"
-    n_unit = 1024  # 256  # 400 #1024
+    n_unit = 256  # 400 #1024
     n_neighbor = 3
     n_epochs = 50000
     # sigma = 0.10, 0.01
@@ -69,10 +69,10 @@ def mnist_cost(x):
 if __name__ == '__main__':
     # optimal for 1024 units [0.02658881 0.00560278 0.11340053 0.05577199]
     # accuracy = 81.1%
-    domain = [{'name': 'lrate0', 'type': 'continuous', 'domain': [0.1, 0.01]},
-              {'name': 'lratef', 'type': 'continuous', 'domain': [0.01, 1e-4]},
-              {'name': 'sigma0', 'type': 'continuous', 'domain': [0.5, 0.1]},
-              {'name': 'sigmaf', 'type': 'continuous', 'domain': [0.1, 0.05]}]
+    domain = [{'name': 'lrate0', 'type': 'continuous', 'domain': [10.0, 0.05]},
+              {'name': 'lratef', 'type': 'continuous', 'domain': [0.05, 1e-4]},
+              {'name': 'sigma0', 'type': 'continuous', 'domain': [0.7, 0.05]},
+              {'name': 'sigmaf', 'type': 'continuous', 'domain': [0.05, 0.005]}]
 
     optimizer = BayesianOptimization(f=mnist_cost, domain=domain)
     optimizer.run_optimization(max_iter=15)
