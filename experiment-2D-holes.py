@@ -6,23 +6,37 @@ import sys
 import som, plot
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.patheffects as path_effects
 
 
 # -----------------------------------------------------------------------------
 if __name__ == '__main__':
 
-    seed       = 1
+    seed       = 12345
     topology   = "random"
-    n_unit     = 4096
-    n_samples  = 50000
+    # topology   = "regular"
+    n_unit     =  1024
+    # n_samples  = 25000
     n_neighbor = 2
     n_epochs   = 25000
-    sigma      = 0.50, 0.01
-    lrate      = 0.50, 0.01
+    sigma      = 0.5, 0.01
+    lrate      = 0.50, 0.05
     if seed is None:
         seed = np.random.randint(0,1000)
     np.random.seed(seed)
-    
+
+    n = 50_000
+    X = np.random.uniform(0,1,n)
+    Y = np.random.uniform(0,1,n)
+    holes = 64
+    for i in range(holes):
+        x,y = np.random.uniform(0.1,0.9, 2)
+        r = 0.1 * np.random.uniform(0,1)
+        I =  ((X-x)**2 + (Y-y)**2) > r*r
+        X, Y = X[I], Y[I]
+    X = np.c_[X, Y]
+    Y = None
+
     print("Building network (might take some time)... ", end="")
     sys.stdout.flush()
     som = som.SOM(n_unit, topology, n_neighbor)
@@ -32,9 +46,10 @@ if __name__ == '__main__':
     if type == "random":
         print("Number of neighbors: {0}".format(n_neighbor))
 
-    X,Y = np.random.uniform(0, 1, (50000,3)), None
+        
     som.fit(X, Y, n_epochs, sigma=sigma, lrate=lrate)
 
+    np.random.seed(3)
     
     figsize = 2.5*np.array([6,7])
     fig = plt.figure(figsize=figsize, dpi=50)
@@ -43,17 +58,30 @@ if __name__ == '__main__':
     plot.network(ax, som)
     plot.letter(ax, "A")
     ax = plt.subplot2grid((7, 6), (0, 3), colspan=3, rowspan=3, aspect=1)
-    plot.weights_3D(ax, som)
+    plot.weights_2D(ax, som, X)
     plot.letter(ax, "B")
+
+
     
-    X = [ (1.0, 1.0, 1.0), (0.0, 0.0, 0.0), (1.0, 1.0, 0.0),
-          (1.0, 0.0, 0.0), (0.0, 1.0 ,0.0), (0.0, 0.0, 1.0) ]
+    X = X[np.random.randint(0, len(X), 6)]
+    X[4] = 0.65, 0.25
+    
+    ax.scatter(X[:,0], X[:,1], color="black", zorder=100) 
+    for i,x in enumerate(X):
+        text = ax.text(x[0]+.01, x[1]+.01, chr(ord("C")+i), zorder=200,
+                       fontsize=24, fontweight="bold", transform=ax.transAxes)
+        text.set_path_effects([path_effects.Stroke(linewidth=2,
+                                                   foreground='white'),
+                               path_effects.Normal()])
+
+
+    
     for i,x in enumerate(X):
         ax = plt.subplot2grid((7, 6), (3+2*(i//3), 2*(i%3)),
                               colspan=2, rowspan=2, aspect=1)
         plot.activation(ax, som, np.array(x))
         plot.letter(ax, chr(ord("C")+i))
     plt.tight_layout()
-    plt.savefig("experiment-3.pdf", dpi=300)
+    plt.savefig("experiment-2D-holes.pdf")
     plt.show()
 

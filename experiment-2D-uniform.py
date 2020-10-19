@@ -3,16 +3,19 @@
 # Distributed under the terms of the BSD License.
 # -----------------------------------------------------------------------------
 import sys
-import som, mnist, plot
+import som, plot
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.patheffects as path_effects
 
 
+# -----------------------------------------------------------------------------
 if __name__ == '__main__':
 
     seed       = 1
     topology   = "random"
     n_unit     = 1024
+    n_samples  = 25000
     n_neighbor = 3
     n_epochs   = 25000
     sigma      = 0.25, 0.01
@@ -30,11 +33,10 @@ if __name__ == '__main__':
     if type == "random":
         print("Number of neighbors: {0}".format(n_neighbor))
 
-    X, Y = mnist.read("training")
-    xshape, yshape = X.shape[1:], Y.shape[1:]
-    X, Y = X.reshape(len(X),-1), Y.reshape(len(Y),-1)    
+    X = np.random.uniform(0.0, 1, (n_samples,2))
+    Y = None
     som.fit(X, Y, n_epochs, sigma=sigma, lrate=lrate)
-    
+
     
     figsize = 2.5*np.array([6,7])
     fig = plt.figure(figsize=figsize, dpi=50)
@@ -43,16 +45,30 @@ if __name__ == '__main__':
     plot.network(ax, som)
     plot.letter(ax, "A")
     ax = plt.subplot2grid((7, 6), (0, 3), colspan=3, rowspan=3, aspect=1)
-    plot.weights_img(ax, som, xshape)
+    plot.weights_2D(ax, som, X)
     plot.letter(ax, "B")
     
-    X = X[np.random.randint(0,len(X),6)]
+    X = np.array([[.25,.25],
+                  [.50,.50],
+                  [.75,.75],
+                  [.25,.75],
+                  [.75,.25],
+                  [.95,.95]])
+
+    ax.scatter(X[:,0], X[:,1], color="black", zorder=20) 
+    for i,x in enumerate(X):
+        text = ax.text(x[0]+.01, x[1]+.01, chr(ord("C")+i), zorder=100,
+                       fontsize=24, fontweight="bold", transform=ax.transAxes)
+        text.set_path_effects([path_effects.Stroke(linewidth=2,
+                                                   foreground='white'),
+                               path_effects.Normal()])
+    
     for i,x in enumerate(X):
         ax = plt.subplot2grid((7, 6), (3+2*(i//3), 2*(i%3)),
                               colspan=2, rowspan=2, aspect=1)
         plot.activation(ax, som, np.array(x))
         plot.letter(ax, chr(ord("C")+i))
     plt.tight_layout()
-    plt.savefig("experiment-4.pdf", dpi=300)
+    plt.savefig("experiment-2D-uniform.pdf")
     plt.show()
 

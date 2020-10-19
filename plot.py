@@ -43,14 +43,14 @@ def letter(ax, letter):
          path_effects.Normal()])
 
     
-def activation(ax, som, sample, cmap='plasma'):
+def activation(ax, som, sample, cmap='plasma', zoom=1.5):
     """
     Plot network activation relative to given sample
     """
 
     P, V, E = som.positions, som.voronoi, som.edges
     codebook = som.codebook["X"]
-    D = -np.sqrt(((codebook - sample)**2).sum(axis=-1))
+    D = -np.sqrt(((codebook - sample.ravel())**2).sum(axis=-1))
     
     cmap = matplotlib.cm.get_cmap(cmap)
     norm = matplotlib.colors.Normalize(vmin=D.min(), vmax=D.max())
@@ -63,15 +63,15 @@ def activation(ax, som, sample, cmap='plasma'):
     Z = griddata(P, D, (X[None,:], Y[:,None]), method='nearest')
     ax.contour(X, Y, Z, 8, linewidths=0.5, colors='k', alpha=0.75)
 
-    # if len(sample.shape) == 2:
-    #     rows,cols = sample.shape
-    #     image = np.zeros((rows,cols,4))
-    #     image[:,:,0] = image[:,:,1] = image[:,:,2] = 0
-    #     image[:,:,3] = sample
-    #     image = OffsetImage(image, zoom=1.5, zorder=20,
-    #                         interpolation="nearest")
-    #     box = AnnotationBbox(image, (0.9,0.9), frameon=True)
-    #     ax.add_artist(box)
+    if len(sample.shape) == 2:
+        rows,cols = sample.shape
+        image = np.zeros((rows,cols,4))
+        image[:,:,0] = image[:,:,1] = image[:,:,2] = 0
+        image[:,:,3] = sample
+        image = OffsetImage(image, zoom=zoom, zorder=20,
+                            interpolation="nearest")
+        box = AnnotationBbox(image, (0.9,0.9), frameon=True)
+        ax.add_artist(box)
 
     ax.set_xlim(0,1), ax.set_ylim(0,1)
     ax.set_xticks([]), ax.set_yticks([])

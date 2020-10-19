@@ -6,18 +6,19 @@ import sys
 import som, plot
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.patheffects as path_effects
 
 
 # -----------------------------------------------------------------------------
 if __name__ == '__main__':
 
-    seed       = 1
+    seed       = 3
     topology   = "random"
-    n_unit     = 1024
-    n_samples  = 25000
-    n_neighbor = 3
+    n_unit     = 4096 
+    n_samples  = 50000
+    n_neighbor = 2
     n_epochs   = 25000
-    sigma      = 0.25, 0.01
+    sigma      = 0.50, 0.01
     lrate      = 0.50, 0.01
     if seed is None:
         seed = np.random.randint(0,1000)
@@ -32,12 +33,8 @@ if __name__ == '__main__':
     if type == "random":
         print("Number of neighbors: {0}".format(n_neighbor))
 
-    T = np.random.uniform(0.0, 2.0*np.pi, n_samples)
-    R = np.sqrt(np.random.uniform(0.50**2, 1.0**2, n_samples))
-    X = 0.5 + np.c_[R*np.cos(T), R*np.sin(T)]/2
-    Y = None
+    X,Y = np.random.uniform(0, 1, (50000,3)), None
     som.fit(X, Y, n_epochs, sigma=sigma, lrate=lrate)
-
     
     figsize = 2.5*np.array([6,7])
     fig = plt.figure(figsize=figsize, dpi=50)
@@ -46,16 +43,30 @@ if __name__ == '__main__':
     plot.network(ax, som)
     plot.letter(ax, "A")
     ax = plt.subplot2grid((7, 6), (0, 3), colspan=3, rowspan=3, aspect=1)
-    plot.weights_2D(ax, som, X)
+    plot.weights_3D(ax, som)
     plot.letter(ax, "B")
     
-    X = X[np.random.randint(0,len(X),6)]
+    X = np.array([ [1.0, 1.0, 1.0], [0.0, 0.0, 0.0], [1.0, 1.0, 0.0],
+                   [1.0, 0.0, 0.0], [0.0, 1.0 ,0.0], [0.0, 0.0, 1.0] ])
+    winners = []
+    for i,x in enumerate(X):
+        D = -np.sqrt(((som.codebook["X"] - x)**2).sum(axis=-1))
+        winners.append(np.argmax(D))
+    P = som.positions[winners]
+    ax.scatter(P[:,0], P[:,1], color="black", zorder=100) 
+    for i,p in enumerate(P):
+        text = ax.text(p[0]+.01, p[1]+.01, chr(ord("C")+i), zorder=200,
+                       fontsize=24, fontweight="bold", transform=ax.transAxes)
+        text.set_path_effects([path_effects.Stroke(linewidth=2,
+                                                   foreground='white'),
+                               path_effects.Normal()])
+    
     for i,x in enumerate(X):
         ax = plt.subplot2grid((7, 6), (3+2*(i//3), 2*(i%3)),
                               colspan=2, rowspan=2, aspect=1)
         plot.activation(ax, som, np.array(x))
         plot.letter(ax, chr(ord("C")+i))
     plt.tight_layout()
-    plt.savefig("experiment-2.pdf")
+    plt.savefig("experiment-3D-uniform.pdf", dpi=300)
     plt.show()
 
