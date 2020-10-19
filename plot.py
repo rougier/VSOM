@@ -103,7 +103,7 @@ def weights_2D(ax, som, X):
     ax.set_xticks([]), ax.set_yticks([])
 
 def weights_3D(ax, som):
-    P, V, E = som.positions, som.voronoi, som.edges
+    P, V = som.positions, som.voronoi
     codebook = som.codebook["X"]
     facecolors = edgecolors = codebook
     collection = PolyCollection(
