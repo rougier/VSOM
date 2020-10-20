@@ -37,6 +37,13 @@ if __name__ == '__main__':
     Y = None
     som.fit(X, Y, n_epochs, sigma=sigma, lrate=lrate)
 
+    # Collect minimal/maximal response from the map across all stimuli
+    # vmin, vmax = None, None
+    # for x in X:
+    #     D = -np.sqrt(((som.codebook["X"] - x.ravel())**2).sum(axis=-1))
+    #     vmin = D.min() if vmin is None else min(D.min(), vmin)
+    #     vmax = D.max() if vmax is None else max(D.max(), vmax)
+
     
     figsize = 2.5*np.array([6,7])
     fig = plt.figure(figsize=figsize, dpi=50)
@@ -58,7 +65,7 @@ if __name__ == '__main__':
     ax.scatter(X[:,0], X[:,1], color="black", zorder=20) 
     for i,x in enumerate(X):
         text = ax.text(x[0]+.01, x[1]+.01, chr(ord("C")+i), zorder=100,
-                       fontsize=24, fontweight="bold", transform=ax.transAxes)
+                       fontsize=16, fontweight="bold", transform=ax.transAxes)
         text.set_path_effects([path_effects.Stroke(linewidth=2,
                                                    foreground='white'),
                                path_effects.Normal()])

@@ -43,7 +43,7 @@ def letter(ax, letter):
          path_effects.Normal()])
 
     
-def activation(ax, som, sample, cmap='plasma', zoom=1.5):
+def activation(ax, som, sample, cmap='plasma', zoom=1.5, vmin=None, vmax=None):
     """
     Plot network activation relative to given sample
     """
@@ -51,9 +51,11 @@ def activation(ax, som, sample, cmap='plasma', zoom=1.5):
     P, V, E = som.positions, som.voronoi, som.edges
     codebook = som.codebook["X"]
     D = -np.sqrt(((codebook - sample.ravel())**2).sum(axis=-1))
-    
     cmap = matplotlib.cm.get_cmap(cmap)
-    norm = matplotlib.colors.Normalize(vmin=D.min(), vmax=D.max())
+    vvmin = vmin or D.min()
+    vvmax = vmax or D.max()
+    norm = matplotlib.colors.Normalize(vmin=vmin, vmax=vmax)
+    
     collection = PolyCollection(V, linewidth=1.0,
                                 edgecolors=cmap(norm(D)),
                                 facecolors=cmap(norm(D)))

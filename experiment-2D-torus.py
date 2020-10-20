@@ -39,7 +39,13 @@ if __name__ == '__main__':
     Y = None
     som.fit(X, Y, n_epochs, sigma=sigma, lrate=lrate)
 
-    
+    # Collect minimal/maximal response from the map across all stimuli
+    # vmin, vmax = None, None
+    # for x in X:
+    #     D = -np.sqrt(((som.codebook["X"] - x.ravel())**2).sum(axis=-1))
+    #     vmin = D.min() if vmin is None else min(D.min(), vmin)
+    #     vmax = D.max() if vmax is None else max(D.max(), vmax)
+
     figsize = 2.5*np.array([6,7])
     fig = plt.figure(figsize=figsize, dpi=50)
     
@@ -50,18 +56,16 @@ if __name__ == '__main__':
     plot.weights_2D(ax, som, X)
     plot.letter(ax, "B")
 
-    
     X = X[np.random.randint(0,len(X),6)]
     X[4] = 0.5,0.5
   
     ax.scatter(X[:,0], X[:,1], color="black", zorder=100) 
     for i,x in enumerate(X):
         text = ax.text(x[0]+.01, x[1]+.01, chr(ord("C")+i), zorder=200,
-                       fontsize=24, fontweight="bold", transform=ax.transAxes)
+                       fontsize=16, fontweight="bold", transform=ax.transAxes)
         text.set_path_effects([path_effects.Stroke(linewidth=2,
                                                    foreground='white'),
                                path_effects.Normal()])
-
     
     for i,x in enumerate(X):
         ax = plt.subplot2grid((7, 6), (3+2*(i//3), 2*(i%3)),

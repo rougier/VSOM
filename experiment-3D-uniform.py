@@ -45,9 +45,17 @@ if __name__ == '__main__':
     ax = plt.subplot2grid((7, 6), (0, 3), colspan=3, rowspan=3, aspect=1)
     plot.weights_3D(ax, som)
     plot.letter(ax, "B")
-    
+
+    # Collect minimal/maximal response from the map across all stimuli
+    # vmin, vmax = None, None
+    # for x in X:
+    #     D = -np.sqrt(((som.codebook["X"] - x.ravel())**2).sum(axis=-1))
+    #     vmin = D.min() if vmin is None else min(D.min(), vmin)
+    #     vmax = D.max() if vmax is None else max(D.max(), vmax)
+
     X = np.array([ [1.0, 1.0, 1.0], [0.0, 0.0, 0.0], [1.0, 1.0, 0.0],
                    [1.0, 0.0, 0.0], [0.0, 1.0 ,0.0], [0.0, 0.0, 1.0] ])
+
     winners = []
     for i,x in enumerate(X):
         D = -np.sqrt(((som.codebook["X"] - x)**2).sum(axis=-1))
@@ -56,7 +64,7 @@ if __name__ == '__main__':
     ax.scatter(P[:,0], P[:,1], color="black", zorder=100) 
     for i,p in enumerate(P):
         text = ax.text(p[0]+.01, p[1]+.01, chr(ord("C")+i), zorder=200,
-                       fontsize=24, fontweight="bold", transform=ax.transAxes)
+                       fontsize=16, fontweight="bold", transform=ax.transAxes)
         text.set_path_effects([path_effects.Stroke(linewidth=2,
                                                    foreground='white'),
                                path_effects.Normal()])

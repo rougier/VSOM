@@ -34,8 +34,14 @@ if __name__ == '__main__':
     xshape, yshape = X.shape[1:], Y.shape[1:]
     X, Y = X.reshape(len(X),-1), Y.reshape(len(Y),-1)    
     som.fit(X, Y, n_epochs, sigma=sigma, lrate=lrate)
-    
-    
+
+    # Collect minimal/maximal response from the map across all stimuli
+    # vmin, vmax = None, None
+    # for x in X:
+    #     D = -np.sqrt(((som.codebook["X"] - x.ravel())**2).sum(axis=-1))
+    #     vmin = D.min() if vmin is None else min(D.min(), vmin)
+    #     vmax = D.max() if vmax is None else max(D.max(), vmax)
+
     figsize = 2.5*np.array([6,7])
     fig = plt.figure(figsize=figsize, dpi=50)
     

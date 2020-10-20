@@ -62,20 +62,25 @@ if __name__ == '__main__':
     plot.letter(ax, "B")
 
 
-    
+    # Collect minimal/maximal response from the map across all stimuli
+    # vmin, vmax = None, None
+    # for x in X:
+    #     D = -np.sqrt(((som.codebook["X"] - x.ravel())**2).sum(axis=-1))
+    #     vmin = D.min() if vmin is None else min(D.min(), vmin)
+    #     vmax = D.max() if vmax is None else max(D.max(), vmax)
+
+
     X = X[np.random.randint(0, len(X), 6)]
     X[4] = 0.65, 0.25
+    ax.scatter(X[:,0], X[:,1], color="black", zorder=100)
     
-    ax.scatter(X[:,0], X[:,1], color="black", zorder=100) 
     for i,x in enumerate(X):
         text = ax.text(x[0]+.01, x[1]+.01, chr(ord("C")+i), zorder=200,
-                       fontsize=24, fontweight="bold", transform=ax.transAxes)
+                       fontsize=16, fontweight="bold", transform=ax.transAxes)
         text.set_path_effects([path_effects.Stroke(linewidth=2,
                                                    foreground='white'),
                                path_effects.Normal()])
 
-
-    
     for i,x in enumerate(X):
         ax = plt.subplot2grid((7, 6), (3+2*(i//3), 2*(i%3)),
                               colspan=2, rowspan=2, aspect=1)

@@ -65,7 +65,14 @@ if __name__ == '__main__':
     ax = plt.subplot2grid((7, 6), (0, 3), colspan=3, rowspan=3, aspect=1)
     plot.weights_img(ax, som, xshape, zoom=1.0)
     plot.letter(ax, "B")
-    
+
+    # Collect minimal/maximal response from the map across all stimuli
+    # vmin, vmax = None, None
+    # for x in X:
+    #     D = -np.sqrt(((som.codebook["X"] - x.ravel())**2).sum(axis=-1))
+    #     vmin = D.min() if vmin is None else min(D.min(), vmin)
+    #     vmax = D.max() if vmax is None else max(D.max(), vmax)
+
     X = X[np.random.randint(0,len(X),6)]
     for i,x in enumerate(X):
         ax = plt.subplot2grid((7, 6), (3+2*(i//3), 2*(i%3)),

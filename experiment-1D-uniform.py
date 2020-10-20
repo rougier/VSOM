@@ -35,6 +35,13 @@ if __name__ == '__main__':
     X,Y = np.random.uniform(0, 1, (50000,1)), None
     som.fit(X, Y, n_epochs, sigma=sigma, lrate=lrate)
 
+    # Collect minimal/maximal response from the map across all stimuli
+    # vmin, vmax = None, None
+    # for x in X:
+    #     D = -np.sqrt(((som.codebook["X"] - x.ravel())**2).sum(axis=-1))
+    #     vmin = D.min() if vmin is None else min(D.min(), vmin)
+    #     vmax = D.max() if vmax is None else max(D.max(), vmax)
+
     
     # Figure 1
     figsize = 2.5*np.array([6,7])
@@ -55,6 +62,6 @@ if __name__ == '__main__':
         plot.activation(ax, som, np.array(x))
         plot.letter(ax, chr(ord("C")+i))
     plt.tight_layout()
-    plt.savefig("experiment-1.pdf")
+    plt.savefig("experiment-1D-uniform.pdf")
     plt.show()
 
