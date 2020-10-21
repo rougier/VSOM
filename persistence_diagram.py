@@ -1,4 +1,4 @@
-# import mnist
+import mnist
 import numpy as np
 import gudhi as gd
 import matplotlib
@@ -27,8 +27,8 @@ def dgm(data, is_alpha_simplex_on=False):
         dim1 = alpha_simplex_tree.persistence_intervals_in_dimension(1)
         dim2 = alpha_simplex_tree.persistence_intervals_in_dimension(2)
     else:
-        skeleton = gd.RipsComplex(points=cp, max_edge_length=1.3)
-        # skeleton = gd.RipsComplex(points=cp, max_edge_length=3.0)
+        # skeleton = gd.RipsComplex(points=cp, max_edge_length=1.3)
+        skeleton = gd.RipsComplex(points=cp, max_edge_length=12.0)
         rips_simplex_tree = skeleton.create_simplex_tree(max_dimension=2)
         bar_codes = rips_simplex_tree.persistence()
         dim0 = rips_simplex_tree.persistence_intervals_in_dimension(0)
@@ -43,6 +43,14 @@ def run_pd(dataX, dataY, dataZ, case='Persistence Homology'):
     bcZ, iZ0, iZ1, _ = dgm(dataZ, is_alpha_simplex_on=False)
 
     print(30*"*")
+    entropy = vector_methods.Entropy()
+    print("Input Entropy DH0", entropy(np.nan_to_num(iX0)))
+    print("Input Entropy DH1", entropy(np.nan_to_num(iX1)))
+    print("Regular Entropy DH0", entropy(np.nan_to_num(iY0)))
+    print("Regular Entropy DH1", entropy(np.nan_to_num(iY1)))
+    print("Random Entropy DH0", entropy(np.nan_to_num(iZ0)))
+    print("Random Entropy DH1", entropy(np.nan_to_num(iZ1)))
+
     print("Regular Bottleneck DH0: ", gd.bottleneck_distance(iX0, iY0))
     print("Random Bottleneck DH0: ", gd.bottleneck_distance(iX0, iZ0))
 
@@ -56,24 +64,25 @@ def run_pd(dataX, dataY, dataZ, case='Persistence Homology'):
     print("Random Wasserstein DH1: ", gd.hera.wasserstein_distance(iX1, iZ1))
     print(30*"*")
 
+
     fig = plt.figure(figsize=(16, 11))
     fig.suptitle(case, fontsize=18, weight='bold')
     ax1 = fig.add_subplot(231)
     gd.plot_persistence_barcode(bcX, axes=ax1)
     ax1.set_title("")
-    ax1.set_xlim(0, .6)
+    # ax1.set_xlim(0, .6)
     ax1.set_xlabel(r"$\alpha$", fontsize=21, weight='bold')
 
     ax2 = fig.add_subplot(232)
     gd.plot_persistence_barcode(bcY, axes=ax2)
     ax2.set_title("")
-    ax2.set_xlim(0, .6)
+    # ax2.set_xlim(0, .6)
     ax2.set_xlabel(r"$\alpha$", fontsize=21, weight='bold')
 
     ax3 = fig.add_subplot(233)
     gd.plot_persistence_barcode(bcZ, axes=ax3)
     ax3.set_title("")
-    ax3.set_xlim(0, .6)
+    # ax3.set_xlim(0, .6)
     ax3.set_xlabel(r"$\alpha$", fontsize=21, weight='bold')
 
     ax4 = fig.add_subplot(234)
@@ -157,23 +166,22 @@ if __name__ == '__main__':
     # run_pd(dataX, dataY, dataZ, case=base+cases[1])
     # plt.savefig("./figures/experiment-2-bis-pd.pdf", axis='tight')
 
-    np.random.seed(1)
-    dataY = np.load("./data/experiment-3-regular.npy")
-    print(dataY.shape)
-    dataZ = np.load("./data/experiment-3-random.npy")
-    n_samples = dataY.shape[0]
-    dataX = np.random.uniform(0, 1, (n_samples, 3))
-    run_pd(dataX, dataY, dataZ, case=base+cases[2])
+    # np.random.seed(1)
+    # dataY = np.load("./data/experiment-3-regular.npy")
+    # dataZ = np.load("./data/experiment-3-random.npy")
+    # n_samples = dataY.shape[0]
+    # dataX = np.random.uniform(0, 1, (n_samples, 3))
+    # run_pd(dataX, dataY, dataZ, case=base+cases[2])
     # plt.savefig("./figures/experiment-3-pd.pdf", axis='tight')
 
-    # np.random.seed(1)
-    # dataY = np.load("./data/experiment-4-regular.npy")
-    # dataZ = np.load("./data/experiment-4-random.npy")
-    # dataX, L = mnist.read("training")
-    # N = 1000
-    # index = np.random.choice(np.arange(0, 60000), N)
-    # dataX = dataX[index].reshape(N, 28*28)
-    # # dataX[dataX != 0] = 1
-    # run_pd(dataX, dataY, dataZ, case=base+cases[3])
-    # # plt.savefig("./figures/experiment-4-pd.pdf", axis='tight')
+    np.random.seed(1)
+    dataY = np.load("./data/experiment-4-regular.npy")
+    dataZ = np.load("./data/experiment-4-random.npy")
+    dataX, L = mnist.read("training")
+    N = 1000
+    index = np.random.choice(np.arange(0, 50000), N)
+    dataX = dataX[index].reshape(N, 28*28)
+    # dataX[dataX != 0] = 1
+    run_pd(dataX, dataY, dataZ, case=base+cases[3])
+    plt.savefig("./figures/experiment-4-pd.pdf", axis='tight')
     # plt.show()

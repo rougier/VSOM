@@ -27,8 +27,8 @@ if __name__ == '__main__':
     n_epochs = 50000
     # sigma = 0.10, 0.01
     # lrate = 0.75, 0.01
-    sigma = 0.38, 0.037
-    lrate = 0.9, 0.0004
+    sigma = 0.21568, 0.0085
+    lrate = 3.0234, 0.02355
     if seed is None:
         seed = np.random.randint(0, 1000)
     np.random.seed(seed)

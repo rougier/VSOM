@@ -28,7 +28,7 @@ def mnist_cost(x):
     seed = 123
     topology = "random"
     topology = "regular"
-    n_unit = 256  # 400 #1024
+    n_unit = 1024  # 400 #1024
     n_neighbor = 3
     n_epochs = 50000
     # sigma = 0.10, 0.01
@@ -75,7 +75,7 @@ if __name__ == '__main__':
               {'name': 'sigmaf', 'type': 'continuous', 'domain': [0.05, 0.005]}]
 
     optimizer = BayesianOptimization(f=mnist_cost, domain=domain)
-    optimizer.run_optimization(max_iter=15)
+    optimizer.run_optimization(max_iter=35)
     optimizer.plot_acquisition()
     optimizer.plot_convergence()
     print(optimizer.x_opt)

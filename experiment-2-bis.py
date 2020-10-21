@@ -15,7 +15,7 @@ if __name__ == '__main__':
     seed = 12345
     # topology = "random"
     topology = "random"
-    n_unit = 256  # 1024
+    n_unit = 1024
     # n_samples  = 25000
     n_neighbor = 2
     n_epochs = 25000
@@ -68,5 +68,5 @@ if __name__ == '__main__':
         plot.letter(ax, chr(ord("C")+i))
     plt.tight_layout()
     np.save("./data/experiment-2-bis-random", som.codebook['X'])
-    # plt.savefig("experiment-2-bis.pdf")
+    plt.savefig("experiment-2-bis-random.pdf")
     plt.show()

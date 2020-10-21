@@ -17,8 +17,10 @@ if __name__ == '__main__':
     n_unit = 1024
     n_neighbor = 3
     n_epochs = 25000
-    sigma = 0.25, 0.01
-    lrate = 0.50, 0.01
+    sigma = 0.21568, 0.0085
+    lrate = 3.0234, 0.02355
+    # sigma = 0.25, 0.01
+    # lrate = 0.50, 0.01
     if seed is None:
         seed = np.random.randint(0, 1000)
     np.random.seed(seed)
@@ -54,6 +56,6 @@ if __name__ == '__main__':
         plot.activation(ax, som, np.array(x))
         plot.letter(ax, chr(ord("C")+i))
     plt.tight_layout()
-    # np.save("./data/experiment-4-random", som.codebook['X'])
+    np.save("./data/experiment-4-random", som.codebook['X'])
     # plt.savefig("experiment-4.pdf", dpi=300)
     plt.show()
