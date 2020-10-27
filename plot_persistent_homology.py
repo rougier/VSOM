@@ -4,6 +4,11 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
 
+CB_color_cycle = ['#377eb8', '#ff7f00', '#4daf4a',
+                  '#f781bf', '#a65628', '#984ea3',
+                  '#999999', '#e41a1c', '#dede00']
+
+
 def __min_birth_max_death(persistence, band=0.0):
     # Look for minimum birth date and maximum death date for plot optimisation
     max_death = 0
@@ -30,14 +35,14 @@ def _array_handler(a):
 
 def plot_persistence_barcode(
     persistence=[],
-    alpha=0.6,
-    max_intervals=1000,
-    max_barcodes=1000,
+    alpha=0.85,
+    max_intervals=1024,
+    max_barcodes=1024,
     inf_delta=0.1,
-    legend=False,
+    legend=True,
     colormap=None,
     axes=None,
-    fontsize=16,
+    fontsize=14,
 ):
     persistence = _array_handler(persistence)
 
@@ -50,7 +55,8 @@ def plot_persistence_barcode(
         )[:max_intervals]
 
     if colormap is None:
-        colormap = plt.cm.Set1.colors
+        # colormap = plt.cm.Set1.colors
+        colormap = CB_color_cycle
     if axes is None:
         fig, axes = plt.subplots(1, 1)
 
@@ -74,7 +80,7 @@ def plot_persistence_barcode(
                 left=interval[1][0],
                 alpha=alpha,
                 color=colormap[interval[0]],
-                linewidth=0,
+                linewidth=0.5,
             )
         else:
             # Infinite death case for diagram to be nicer
@@ -85,7 +91,7 @@ def plot_persistence_barcode(
                 left=interval[1][0],
                 alpha=alpha,
                 color=colormap[interval[0]],
-                linewidth=0,
+                linewidth=0.5,
             )
         ind = ind + 1
 
@@ -93,10 +99,10 @@ def plot_persistence_barcode(
         dimensions = list(set(item[0] for item in persistence))
         axes.legend(
             handles=[
-                mpatches.Patch(color=colormap[dim], label=str(dim))
+                mpatches.Patch(color=colormap[dim], label="H"+str(dim))
                 for dim in dimensions
             ],
-            loc="lower right",
+            loc="upper right",
         )
 
     axes.set_title("Persistence barcode", fontsize=fontsize)
@@ -110,14 +116,14 @@ def plot_persistence_diagram(
     persistence=[],
     alpha=0.6,
     band=0.0,
-    max_intervals=1000,
-    max_plots=1000,
+    max_intervals=1024,
+    max_plots=1024,
     inf_delta=0.1,
-    legend=False,
+    legend=True,
     colormap=None,
     axes=None,
-    fontsize=16,
-    greyblock=True
+    fontsize=14,
+    greyblock=False
 ):
     persistence = _array_handler(persistence)
 
@@ -134,7 +140,8 @@ def plot_persistence_diagram(
         )[:max_intervals]
 
     if colormap is None:
-        colormap = plt.cm.Set1.colors
+        # colormap = plt.cm.Set1.colors
+        colormap = CB_color_cycle
     if axes is None:
         fig, axes = plt.subplots(1, 1)
 
@@ -193,19 +200,19 @@ def plot_persistence_diagram(
         ytl = ["%.3f" % e for e in yt]  # to avoid float precision error
         ytl[-1] = r'$+\infty$'
         axes.set_yticks(yt)
-        axes.set_yticklabels(ytl)
+        axes.set_yticklabels(ytl, fontsize=14, weight='bold')
 
     if legend:
         dimensions = list(set(item[0] for item in persistence))
         axes.legend(
             handles=[
-                mpatches.Patch(color=colormap[dim], label=str(dim))
+                mpatches.Patch(color=colormap[dim], label="H"+str(dim))
                 for dim in dimensions
             ]
         )
 
-    axes.set_xlabel("Birth", fontsize=fontsize)
-    axes.set_ylabel("Death", fontsize=fontsize)
+    axes.set_xlabel("Birth", fontsize=fontsize, weight='bold')
+    axes.set_ylabel("Death", fontsize=fontsize, weight='bold')
     axes.set_title("Persistence diagram", fontsize=fontsize)
     # Ends plot on infinity value and starts a little bit before min_birth
     axes.axis([axis_start, axis_end, axis_start, infinity + delta/2])
@@ -218,50 +225,108 @@ def read_pdgm(fname):
     return dgm
 
 
-if __name__ == '__main__':
-    dgm_input = read_pdgm("./results/input-barcode-experiment-2D-holes.dat")
-    dgm_regular = read_pdgm("./results/regular-barcode-experiment-2D-holes.dat")
-    dgm_random = read_pdgm("./results/random-barcode-experiment-2D-holes.dat")
-
+def plot_diagrams(dgm_input, dgm_regular, dgm_random):
     fig = plt.figure(figsize=(16, 11))
+    fig.subplots_adjust(wspace=0.3, hspace=0.2)
     ax1 = fig.add_subplot(231)
-    # plot_persistence_barcode(dgm_input, axes=ax1)
-    plot_persistence_diagram(dgm_input, axes=ax1)
+    plot_persistence_barcode(dgm_input, axes=ax1)
     ax1.set_title("")
     ax1.set_xlabel(r"$\alpha$", fontsize=21, weight='bold')
+    ticks = ax1.get_yticks().astype('i')
+    ax1.set_yticklabels(ticks, fontsize=14, weight='bold')
+    xlim = ax1.get_xlim()
+    ax1.set_xticks(np.round(np.linspace(0, xlim[1], 3), 3))
+    ticks = ax1.get_xticks()
+    ax1.set_xticklabels(ticks, fontsize=14, weight='bold')
+    K = 1024 + 60
+    M = 0
+    ax1.text(M, K, 'A',
+             va='top',
+             ha='left',
+             fontsize=18,
+             weight='bold')
 
     ax2 = fig.add_subplot(232)
-    # plot_persistence_barcode(dgm_regular, axes=ax2)
-    plot_persistence_diagram(dgm_regular, axes=ax2)
+    plot_persistence_barcode(dgm_regular, axes=ax2)
     ax2.set_title("")
     ax2.set_xlabel(r"$\alpha$", fontsize=21, weight='bold')
+    ax2.set_yticks([])
+    xlim = ax2.get_xlim()
+    ax2.set_xticks(np.round(np.linspace(0, xlim[1], 3), 3))
+    ticks = ax2.get_xticks()
+    ax2.set_xticklabels(ticks, fontsize=14, weight='bold')
+    ax2.text(M, K, 'B',
+             va='top',
+             ha='left',
+             fontsize=18,
+             weight='bold')
 
     ax3 = fig.add_subplot(233)
-    # plot_persistence_barcode(dgm_random, axes=ax3)
-    plot_persistence_diagram(dgm_random, axes=ax3)
+    plot_persistence_barcode(dgm_random, axes=ax3)
     ax3.set_title("")
     ax3.set_xlabel(r"$\alpha$", fontsize=21, weight='bold')
+    ax3.set_yticks([])
+    xlim = ax3.get_xlim()
+    ax3.set_xticks(np.round(np.linspace(0, xlim[1], 3), 3))
+    ticks = ax3.get_xticks()
+    ax3.set_xticklabels(ticks, fontsize=14, weight='bold')
+    ax3.text(M, K, 'C',
+             va='top',
+             ha='left',
+             fontsize=18,
+             weight='bold')
 
-    # ax4 = fig.add_subplot(234)
-    # plot_persistence_diagram(bcX, axes=ax4, greyblock=False, legend=True,
-    #                          fontsize=21)
-    # ax4.set_title("")
-    # ticks = np.round(ax4.get_xticks(), 2)
-    # ax4.set_xticklabels(ticks, fontsize=18, weight='bold')
+    ax4 = fig.add_subplot(234)
+    plot_persistence_diagram(dgm_input, axes=ax4)
+    ax4.set_title("")
+    xlim = ax4.get_xlim()
+    ax4.set_xticks(np.round(np.linspace(0, xlim[1], 3), 3))
+    ticks = ax4.get_xticks()
+    ax4.set_xticklabels(ticks, fontsize=14, weight='bold')
+    # K = ax4.get_xlim()[1] + 0.012  2D-Torus
+    K = ax4.get_xlim()[1] + 0.002801
+    ax4.text(M, K, 'D',
+             va='top',
+             ha='left',
+             fontsize=18,
+             weight='bold')
 
-    # ax5 = fig.add_subplot(235)
-    # plot_persistence_diagram(bcY, axes=ax5, greyblock=False, legend=True,
-    #                          fontsize=21)
-    # ticks = np.round(ax5.get_xticks(), 2)
-    # ax5.set_xticklabels(ticks, fontsize=18, weight='bold')
-    # ax5.set_ylabel("")
-    # ax5.set_title("")
+    xlim_track, ylim_track = [], []
+    ax5 = fig.add_subplot(235)
+    plot_persistence_diagram(dgm_regular, axes=ax5)
+    xlim = ax5.get_xlim()
+    ylim = ax5.get_ylim()
+    xlim_track.append(xlim)
+    ylim_track.append(ylim)
+    ax5.set_xticks(np.round(np.linspace(0, xlim[1], 3), 3))
+    ticks = ax5.get_xticks()
+    ax5.set_xticklabels(ticks, fontsize=14, weight='bold')
+    ax5.set_ylabel("")
+    ax5.set_title("")
+    # K = ax5.get_xlim()[1] + 0.00075   2D-torus
+    # K = ax5.get_xlim()[1] + 0.00099   2D-holes
+    K = ax5.get_xlim()[1] + 0.006
+    ax5.text(M, K, 'E',
+             va='top',
+             ha='left',
+             fontsize=18,
+             weight='bold')
 
-    # ax6 = fig.add_subplot(236)
-    # plot_persistence_diagram(bcZ, axes=ax6, greyblock=False, legend=True,
-    #                          fontsize=21)
-    # ticks = np.round(ax6.get_xticks(), 2)
-    # ax6.set_xticklabels(ticks, fontsize=18, weight='bold')
-    # ax6.set_title("")
-    # ax6.set_ylabel("")
-    plt.show()
+    ax6 = fig.add_subplot(236)
+    plot_persistence_diagram(dgm_random, axes=ax6)
+    xlim = ax6.get_xlim()
+    ylim = ax6.get_ylim()
+    xlim_track.append(xlim)
+    ylim_track.append(ylim)
+    ax6.set_xticks(np.round(np.linspace(0, xlim[1], 3), 3))
+    ticks = ax6.get_xticks()
+    ax6.set_xticklabels(ticks, fontsize=14, weight='bold')
+    ax6.set_title("")
+    ax6.set_ylabel("")
+    # K = ax6.get_xlim()[1] + 0.0013 2D Holes and Torus
+    K = ax6.get_xlim()[1] + 0.005
+    ax6.text(M, K, 'F',
+             va='top',
+             ha='left',
+             fontsize=18,
+             weight='bold')
