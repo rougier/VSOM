@@ -13,7 +13,7 @@ import matplotlib.patheffects as path_effects
 if __name__ == '__main__':
 
     seed       = 3
-    topology   = "random"
+    topology   = "regular"
     n_unit     = 4096 
     n_samples  = 50000
     n_neighbor = 2
@@ -75,6 +75,7 @@ if __name__ == '__main__':
         plot.activation(ax, som, np.array(x))
         plot.letter(ax, chr(ord("C")+i))
     plt.tight_layout()
+    # np.save("experiment-3D-uniform-"+topology, som.codebook['X'])
     plt.savefig("experiment-3D-uniform.pdf", dpi=300)
     plt.show()
 

@@ -13,7 +13,7 @@ import matplotlib.patheffects as path_effects
 if __name__ == '__main__':
 
     seed       = 12345
-    topology   = "random"
+    topology   = "regular"
     # topology   = "regular"
     n_unit     =  1024
     # n_samples  = 25000
@@ -87,6 +87,7 @@ if __name__ == '__main__':
         plot.activation(ax, som, np.array(x))
         plot.letter(ax, chr(ord("C")+i))
     plt.tight_layout()
+    # np.save("./results/experiment-2D-holes-"+topology, som.codebook['X'])
     plt.savefig("experiment-2D-holes.pdf")
     plt.show()
 

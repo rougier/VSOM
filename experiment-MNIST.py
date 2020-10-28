@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 if __name__ == '__main__':
 
     seed       = 1
-    topology   = "random"
+    topology   = "regular"
     n_unit     = 1024
     n_neighbor = 3
     n_epochs   = 60000
@@ -61,6 +61,7 @@ if __name__ == '__main__':
         plot.activation(ax, som, np.array(x).reshape(28,28))
         plot.letter(ax, chr(ord("C")+i))
     plt.tight_layout()
+    # np.save("./results/experiment-MNIST-"+topology, som.codebook['X'])
     plt.savefig("experiment-MNIST.pdf", dpi=300)
     plt.show()
 
