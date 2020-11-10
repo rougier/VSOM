@@ -5,6 +5,7 @@
 import sys
 import som, mnist, plot
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
 
 
@@ -14,7 +15,7 @@ if __name__ == '__main__':
     topology   = "regular"
     n_unit     = 1024
     n_neighbor = 3
-    n_epochs   = 25000
+    n_epochs   = 60000
     sigma      = 0.25, 0.01
     lrate      = 0.50, 0.01
     if seed is None:
@@ -49,7 +50,8 @@ if __name__ == '__main__':
     plot.network(ax, som)
     plot.letter(ax, "A")
     ax = plt.subplot2grid((7, 6), (0, 3), colspan=3, rowspan=3, aspect=1)
-    plot.weights_img(ax, som, xshape)
+    cmap = matplotlib.cm.get_cmap("tab10")
+    plot.weights_img(ax, som, xshape, cmap=cmap)
     plot.letter(ax, "B")
     
     X = X[np.random.randint(0,len(X),6)]

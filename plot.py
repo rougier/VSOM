@@ -114,14 +114,22 @@ def weights_3D(ax, som):
     ax.set_xlim(0,1), ax.set_ylim(0,1)
     ax.set_xticks([]), ax.set_yticks([])
 
-def weights_img(ax, som, shape, inverse=False, zoom=0.5):
+def weights_img(ax, som, shape, inverse=False, zoom=0.5, cmap=None):
     P, V, E = som.positions, som.voronoi, som.edges
     codebook = som.codebook["X"]
+
+    if cmap:
+        labels = np.argmax(som.codebook["Y"], axis=-1)
+        norm = matplotlib.colors.Normalize(vmin=0,vmax=9)
+        facecolors = cmap(norm(labels))
+    else:
+        faceolors = "w"
+        
     if inverse: codebook = 1-codebook
     
     rows, cols = shape
     collection = PolyCollection(V, linewidth=0.25, alpha=1.0,
-                                edgecolors="k", facecolors="w")
+                                edgecolors="k", facecolors=facecolors)
     ax.add_collection(collection)
     for position, data in zip(P, codebook):
         image = np.zeros((rows,cols,4))
