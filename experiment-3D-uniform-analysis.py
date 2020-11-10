@@ -7,7 +7,7 @@ from plot_persistent_homology import plot_diagrams
 
 if __name__ == '__main__':
     np.random.seed(3)
-    num_neurons = 1024
+    num_neurons = 4096
     bc_base = './results/barcode-experiment-3D-uniform-'
     h0_base = './results/homology0-experiment-3D-uniform-'
     h1_base = './results/homology1-experiment-3D-uniform-'
