@@ -35,7 +35,7 @@ class persistence(object):
     def compute_persistence(self,
                             point_cloud,
                             case='Persistence Homology'):
-        bc, h0, h1, _ = self.persistence_diagram(point_cloud)
+        bc, h0, h1, h2 = self.persistence_diagram(point_cloud)
         # bc_regular, h0_reg, h1_reg, _ = self.persistence_diagram(regular)
         # bc_random, h0_ran, h1_ran, _ = self.persistence_diagram(random)
 
@@ -45,15 +45,26 @@ class persistence(object):
                         "./results/homology0-experiment-"+case+".dat")
         self.store_pdgm(h1,
                         "./results/homology1-experiment-"+case+".dat")
+        self.store_pdgm(h2,
+                        "./results/homology2-experiment-"+case+".dat")
 
     def compute_distances(self,
                           homology0_X,
                           homology1_X,
                           homology0_Y,
-                          homology1_Y):
-        DH0 = gd.bottleneck_distance(homology0_X, homology0_Y)
-        DH1 = gd.bottleneck_distance(homology1_X, homology1_Y)
-        return DH0, DH1
+                          homology1_Y,
+                          homology2_X=None,
+                          homology2_Y=None):
+        inf = float('inf')
+        homology0_X = [h for h in homology0_X if h[1] != inf]
+        homology1_X = [h for h in homology1_X if h[1] != inf]
+        homology0_Y = [h for h in homology0_Y if h[1] != inf]
+        homology1_Y = [h for h in homology1_Y if h[1] != inf]
+
+        DH0 = gd.bottleneck_distance(homology0_X, homology0_Y, e=0)
+        DH1 = gd.bottleneck_distance(homology1_X, homology1_Y, e=0)
+        DH2 = gd.bottleneck_distance(homology2_X, homology2_Y, e=0)
+        return DH0, DH1, DH2
 
     def store_pdgm(self, dgm, fname='example.data'):
         with open(fname, "wb") as f:

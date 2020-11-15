@@ -238,13 +238,14 @@ def plot_diagrams(dgm_input, dgm_regular, dgm_random):
     ax1.set_xticks(np.round(np.linspace(0, xlim[1], 3), 3))
     ticks = ax1.get_xticks()
     ax1.set_xticklabels(ticks, fontsize=14, weight='bold')
-    K = 1024 + 60
+    K = 1.06
     M = 0
     ax1.text(M, K, 'A',
              va='top',
              ha='left',
              fontsize=18,
-             weight='bold')
+             weight='bold',
+             transform=ax1.transAxes)
 
     ax2 = fig.add_subplot(232)
     plot_persistence_barcode(dgm_regular, axes=ax2)
@@ -259,7 +260,8 @@ def plot_diagrams(dgm_input, dgm_regular, dgm_random):
              va='top',
              ha='left',
              fontsize=18,
-             weight='bold')
+             weight='bold',
+             transform=ax2.transAxes)
 
     ax3 = fig.add_subplot(233)
     plot_persistence_barcode(dgm_random, axes=ax3)
@@ -274,7 +276,8 @@ def plot_diagrams(dgm_input, dgm_regular, dgm_random):
              va='top',
              ha='left',
              fontsize=18,
-             weight='bold')
+             weight='bold',
+             transform=ax3.transAxes)
 
     ax4 = fig.add_subplot(234)
     plot_persistence_diagram(dgm_input, axes=ax4)
@@ -283,13 +286,12 @@ def plot_diagrams(dgm_input, dgm_regular, dgm_random):
     ax4.set_xticks(np.round(np.linspace(0, xlim[1], 3), 3))
     ticks = ax4.get_xticks()
     ax4.set_xticklabels(ticks, fontsize=14, weight='bold')
-    # K = ax4.get_xlim()[1] + 0.012  2D-Torus
-    K = ax4.get_xlim()[1] + 0.002801
     ax4.text(M, K, 'D',
              va='top',
              ha='left',
              fontsize=18,
-             weight='bold')
+             weight='bold',
+             transform=ax4.transAxes)
 
     xlim_track, ylim_track = [], []
     ax5 = fig.add_subplot(235)
@@ -303,14 +305,12 @@ def plot_diagrams(dgm_input, dgm_regular, dgm_random):
     ax5.set_xticklabels(ticks, fontsize=14, weight='bold')
     ax5.set_ylabel("")
     ax5.set_title("")
-    # K = ax5.get_xlim()[1] + 0.00075   2D-torus
-    # K = ax5.get_xlim()[1] + 0.00099   2D-holes
-    K = ax5.get_xlim()[1] + 0.006
     ax5.text(M, K, 'E',
              va='top',
              ha='left',
              fontsize=18,
-             weight='bold')
+             weight='bold',
+             transform=ax5.transAxes)
 
     ax6 = fig.add_subplot(236)
     plot_persistence_diagram(dgm_random, axes=ax6)
@@ -323,10 +323,9 @@ def plot_diagrams(dgm_input, dgm_regular, dgm_random):
     ax6.set_xticklabels(ticks, fontsize=14, weight='bold')
     ax6.set_title("")
     ax6.set_ylabel("")
-    # K = ax6.get_xlim()[1] + 0.0013 2D Holes and Torus
-    K = ax6.get_xlim()[1] + 0.005
     ax6.text(M, K, 'F',
              va='top',
              ha='left',
              fontsize=18,
-             weight='bold')
+             weight='bold',
+             transform=ax6.transAxes)

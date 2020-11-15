@@ -7,6 +7,10 @@ from scipy.stats import wasserstein_distance
 
 curse(np.ndarray, 'H', property(fget=lambda A: A.conj().T))
 
+CB_color_cycle = ['#377eb8', '#ff7f00', '#4daf4a',
+                  '#f781bf', '#a65628', '#984ea3',
+                  '#999999', '#e41a1c', '#dede00']
+
 
 def check_normality(X):
     res1 = X @ X.H
@@ -81,27 +85,31 @@ def eigvals_distribution(regular_codebook, random_codebook, ax, case='1d'):
     if case == '2dbis':
         regular = make_list_equal_size(regular)
         random = make_list_equal_size(random)
+    mineig = min(wreg.min(), wran.min())
+    maxeig = max(wreg.max(), wran.max())
     regular = np.array(regular).flatten().reshape(-1, 1)
     random = np.array(random).flatten().reshape(-1, 1)
     kde_re = KernelDensity(kernel='gaussian', bandwidth=.1).fit(regular)
     kde_ra = KernelDensity(kernel='gaussian', bandwidth=.1).fit(random)
     # X = np.linspace(-50, 30000, 1000)
-    X = np.linspace(0, 10, 100)
+    # X = np.linspace(0, 10, 100)
+    X = np.linspace(mineig, maxeig, 100)
     X = X[:, np.newaxis]
     P = np.exp(kde_re.score_samples(X))
     Q = np.exp(kde_ra.score_samples(X))
-    ax.plot(P, 'b', lw=2, label='Regular (P)')
-    ax.plot(Q, 'k', lw=2, label='Random (Q)')
+    ax.plot(P, 'b', lw=2, label='SOM (P)', c=CB_color_cycle[0], ls='--')
+    ax.plot(Q, 'k', lw=2, label='RSOM (Q)', c=CB_color_cycle[1], ls='-.')
     w = np.round(wasserstein_distance(P, Q), 7)
-    ax.set_title(r"$W(P, Q) = $"+str(w), fontsize=16, weight='bold')
+    print(w)
+    # ax.set_title(r"$W(P, Q) = $"+str(w), fontsize=16, weight='bold')
     ax.legend()
 
 
 def eigs():
-    fig = plt.figure(figsize=(14, 14))
-    fig.subplots_adjust(wspace=0.4, hspace=0.4)
+    fig = plt.figure(figsize=(17, 4))
+    fig.subplots_adjust(wspace=0.4, hspace=0.4, bottom=0.2)
 
-    ax = fig.add_subplot(221)
+    ax = fig.add_subplot(141)
     som_regular = np.load("./data/experiment-2-regular.npy")
     som_random = np.load("./data/experiment-2-random.npy")
     eigvals_distribution(som_regular, som_random, ax, case='2d')
@@ -111,60 +119,68 @@ def eigs():
     ax.set_xticklabels(ticks, fontsize=16, weight='bold')
     ticks = np.round(ax.get_yticks(), 4)
     ax.set_yticklabels(ticks, fontsize=16, weight='bold')
+    ax.set_xlabel('Eigenvalues', fontsize=16, weight='bold')
+    ax.set_ylabel('Probability Density', fontsize=16, weight='bold')
     ax.text(0, 3.8, 'A',
             va='top',
             ha='left',
             fontsize=16,
             weight='bold')
 
-    ax = fig.add_subplot(222)
+    ax = fig.add_subplot(142)
     som_regular = np.load("./data/experiment-2-bis-regular.npy")
     som_random = np.load("./data/experiment-2-bis-random.npy")
     eigvals_distribution(som_regular, som_random, ax, case='2dbis')
     ax.set_xlim([0, 10])
     ax.set_ylim([0, 3.5])
+    ax.set_xlabel('Eigenvalues', fontsize=16, weight='bold')
     ticks = ax.get_xticks().astype('i')
     ax.set_xticklabels(ticks, fontsize=16, weight='bold')
-    ticks = np.round(ax.get_yticks(), 4)
-    ax.set_yticklabels(ticks, fontsize=16, weight='bold')
+    ax.set_yticks([])
+    # ticks = np.round(ax.get_yticks(), 4)
+    # ax.set_yticklabels(ticks, fontsize=16, weight='bold')
     ax.text(0, 3.8, 'B',
             va='top',
             ha='left',
             fontsize=16,
             weight='bold')
 
-    ax = fig.add_subplot(223)
+    ax = fig.add_subplot(143)
     som_regular = np.load("./data/experiment-3-regular.npy")
     som_random = np.load("./data/experiment-3-random.npy")
     eigvals_distribution(som_regular, som_random, ax, case='3d')
+    ax.set_xlabel('Eigenvalues', fontsize=16, weight='bold')
     ax.set_xlim([0, 10])
     ax.set_ylim([0, 3.5])
     ticks = ax.get_xticks().astype('i')
     ax.set_xticklabels(ticks, fontsize=16, weight='bold')
-    ticks = np.round(ax.get_yticks(), 4)
-    ax.set_yticklabels(ticks, fontsize=16, weight='bold')
+    ax.set_yticks([])
+    # ticks = np.round(ax.get_yticks(), 4)
+    # ax.set_yticklabels(ticks, fontsize=16, weight='bold')
     ax.text(0, 3.8, 'C',
             va='top',
             ha='left',
             fontsize=16,
             weight='bold')
 
-    ax = fig.add_subplot(224)
+    ax = fig.add_subplot(144)
     som_regular = np.load("./data/experiment-4-regular.npy")
     som_random = np.load("./data/experiment-4-random.npy")
     eigvals_distribution(som_regular, som_random, ax, case='4d')
+    ax.set_xlabel('Eigenvalues', fontsize=16, weight='bold')
     ax.set_xlim([0, 10])
     ax.set_ylim([0, 3.5])
     ticks = ax.get_xticks().astype('i')
     ax.set_xticklabels(ticks, fontsize=16, weight='bold')
-    ticks = np.round(ax.get_yticks(), 4)
-    ax.set_yticklabels(ticks, fontsize=16, weight='bold')
+    ax.set_yticks([])
+    # ticks = np.round(ax.get_yticks(), 4)
+    # ax.set_yticklabels(ticks, fontsize=16, weight='bold')
     ax.text(0, 3.8, 'D',
             va='top',
             ha='left',
             fontsize=16,
             weight='bold')
-    plt.savefig("./figures/eig-distributions.pdf", axis='tight')
+    plt.savefig("./eig-distributions-new.pdf", axis='tight')
 
 
 if __name__ == '__main__':
