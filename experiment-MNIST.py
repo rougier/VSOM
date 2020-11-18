@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 if __name__ == '__main__':
 
     seed       = 1
-    topology   = "regular"
+    topology   = "random"
     n_unit     = 1024
     n_neighbor = 3
     n_epochs   = 60000

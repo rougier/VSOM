@@ -1,0 +1,34 @@
+%%
+\begin{algorithm}[!htpb]
+	\begin{algorithmic}
+    	\Require $\mathcal{S}$, $\mathcal{N}$, $t_f$, $dt$, $\varepsilon_i$, $\varepsilon_f$, $\sigma_i$, $\sigma_f$
+        \Ensure ${\bf W}$
+        \If {\text{Blue noise is True}}
+        	\State Compute blue noise distribution $\mathcal{B}$
+        	\State Compute $e_{ij} = || p_i - p_j ||$		\Comment{Euclidean pair distances matrix}
+        	\State Construct matrix ${\bf G}_m$			\Comment{Connectivity matrix}
+        	\State Compute matrix ${\bf D}_m$			\Comment{Shortest paths between nodes}
+        	\State Place neurons positions on points sampled from $\mathcal{B}$
+        \Else
+        	\State Discretize grid $[0, 1]\times[0, 1]$ and place neurons on its nodes
+        \EndIf
+        
+        \State $w_s \gets \varnothing$, ${\bf W} \sim \mathcal{U}(0, 1)$	\Comment{Initialize winner unit and code book}
+                 
+        \For{$t \gets 0, \ldots, t_f$}
+        	\State ${\bf v} \gets \bf{s}_t $	\Comment{${\bf s}_t \in \mathcal{S}$}
+        	\State $s \gets argmin_{i \in \mathcal{N}} (\lVert \mathbf{v} - \mathbf{w}_i \rVert)$
+        	\State $\varepsilon(t) = \varepsilon_i\left(\frac{\varepsilon_f}{\varepsilon_i}\right)^{t/t_f}$
+        	\State $\sigma(t) = \sigma_i\left(\frac{\sigma_f}{\sigma_i}\right)^{t/t_f}$
+        	\State $h(t,i,j; \sigma) = \exp\Big(-\frac{{d_{ij}}^2}{\sigma(t)^2}\Big)$
+        	\State ${\bf w}_i^{\text{new}} = {\bf w}_i^{\text{old}} + \varepsilon(t) \odot h(t,i,s;\sigma) \odot (\mathbf{v} - \mathbf{w}_i^{\text{old}})$
+        \EndFor
+	\end{algorithmic}
+\caption{Voronoi Self-organizing Map (vSOM). $\mathcal{N}$ is neurons index set,
+$\mathcal{I}$ is the input dataset, $t_f$ is the simulation time (or the number of input samples).
+$\varepsilon_i$ and $\varepsilon_f$ are the initial and final learning rates,
+respectively. $\sigma_i$ and $\sigma_f$ are the initial and final neighborhood
+widths. $\odot$ is the Hadamard product.}
+\label{algo:vsom}
+\end{algorithm}
+%%

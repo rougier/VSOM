@@ -20,11 +20,11 @@ if __name__ == '__main__':
     seed       = 1
     topology   = "random"
     # topology   = "regular"
-    n_unit     = 256 # 400 #1024
+    n_unit     = 1024
     n_neighbor = 3
-    n_epochs   = 50000
-    sigma      = 0.10, 0.01
-    lrate      = 0.25, 0.01
+    n_epochs   = 60000
+    sigma      = 0.25, 0.01
+    lrate      = 0.50, 0.01
     if seed is None:
         seed = np.random.randint(0,1000)
     np.random.seed(seed)

@@ -1,0 +1,29 @@
+
+\section{Results}
+
+We ran several experiments to better characterize the properties of the randomized SOM and to compare them to the properties of a regular two-dimensional SOM. More specifically, we ran experiments using one dimensional, two dimensional and three dimensional datasets using uniform or shaped distributions. In this section, we only report a two-dimensional case and a three-dimensional case that we consider to be the most illustrative (all other results can be found in the supplementary material). We additionally ran an experiment using the MNIST hand-written data set and we compared it with a regular SOM. Finally, the last experiment is specific to the randomized SOM and shows how the model can recover from the removal (lesion) or the addition (neurogenesis) of neurons while conserving the overall self-organization. Each experiment (but the last) has been ran for both the randomized SOM and the regular SOM even though only the results for the randomized SOM are shown graphically in a dedicated figure while for the analysis, we use results from both SOM and RSOM. The reason to not show regular SOM results is that we assume the behavior is well known and does not need to be further detailed. 
+
+\input{03-results-A}
+\input{03-results-B}
+\input{03-results-C}
+\input{03-results-D}
+
+
+%We conduct five distinct experiments to investigate the proposed algorithm, VSOM, and its properties. Furthermore, for each experiment we train a Kohonen map to identify any potential difference with the VSOM.  The first experiment tests the ability of a two-dimensional map to learn representations of one-dimensional data. The second experiment consists of  two parts: in the first part the SOM algorithms learn to map a two-dimensional uniform distribution of an annulus on a two-dimensional neural space, and  in the second part they learn a two-dimensional Euclidean plane with holes. Three-dimensional points uniformly distributed on a cube are being mapped by the two SOM algorithms on two-dimensional neural space in the third experiment. In the fourth experiment, we tested how VSOM and Kohonen can map the MNIST hand-written digits on a two-dimensional neural space.  Finally, we investigate how the neural space is being reorganized after a removal of some of the neural units (ablation) or after the injection of new neural units in the map (neurogenesis). It is known that this sort of reorganization takes place naturally within brain. More precisely, neurogenesis happens in the subgranular zone of the Dentate Gyrus (DG) of the hippocampus and in the subventricular zone of the lateral ventricle~\cite{Alvarez:2004}. On the other hand, when neural tissue in the cerebral cortex~\cite{Merzenich:1984,Taub:2014} or the spinal cord~\cite{Bareyre:2004,Liu:1958}, the undamaged neurons reorganize their receptive fields and undamaged nerves  sprout new connections, respectively, partially or fully restore functionality. Therefore, the study of reorganization after a neural ablation or neurogenesis within a self-organizing map is detrimental. 
+
+% In the following sections we provide results regarding the VSOM in main figures. However, we have run experiments using both the Kohonen and the VSOM learning algorithms (except the reorganization case, where we use only the VSOM algorithm). When we analyze the results using the eigenvalues distribution method or the persistence diagrams we present results for both the VSOM and the Kohonen. Furthermore, we provide figures regarding the cases of: (i) the two-dimensional data set with random holes on a plain, (ii) a three dimensional uniform distribution, and (iii) the MNIST hand written digits set in the main text. The rest of the results are given in the Supplementary Material. 
+
+%\begin{table}[!ht]
+%  \begin{center}
+%    \begin{tabular}{ccccc}
+%        \textbf{Algorithm} & $d_b$ $H0$ & $W_p$ $(H0)$ & $d_b$ $H1$ & $W_p$ $(H1)$ \\
+%        \hline
+%        Kohonen & 0.0811 & 0.0549 & 15.1644 & 9.2962 \\
+%        VSOM    & 0.0811 & 0.0450 & 21.6092 & 7.4033
+%      \end{tabular}
+%      \caption{\textbf{Experiment $3$ Persistence Diagram Distances.} Bottleneck      and Wasserstein distances between the persistence diagrams of the input and Kohonen and VSOM. In this experiment both the Kohonen and the VSOM do not express any significant difference. $d_b$ is the bottleneck distance~\eqref{eq:bottle}, $W_p$ is the Wasserstein distance~\eqref{eq:wasser}, $H0$ indicates the Homology Group $0$ (path-connected components, or one-dimensional holes), $H1$ is the Hologoy group $1$ (two-dimensional holes).}
+      %\label{table:parameters}
+%  \end{center}
+% \end{table}
+
+
