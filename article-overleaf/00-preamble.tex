@@ -1,46 +1,17 @@
-\usepackage[left=3cm, right=3cm, top=3cm, bottom=3cm]{geometry}
+    
 \usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsfonts}
 \usepackage{graphicx} 
 \graphicspath{{figures/}}
-% \usepackage{amsmath,amssymb,mathtools,amsfonts,amsthm}
-\usepackage{amsmath,amssymb,amsfonts}
-\usepackage{authblk}
-% See https://tex.stackexchange.com/questions/324656
-% (affiliations on same line to save on line on first page)
-\makeatletter
-\renewcommand\AB@affilsepx{~--- \protect\Affilfont}
-\makeatother
 
-\usepackage{libertine}
-\usepackage[libertine]{newtxmath}
-\usepackage[scaled=0.96]{zi4}
-% \usepackage{algorithm,algpseudocode}
 \usepackage{lineno}
 \usepackage{parskip}
-
-\usepackage[
-  backend=biber,
-  style = numeric,
-  sorting = none,
-  giveninits = true,
-  maxcitenames=3,
-  mincitenames=1,
-  maxbibnames=10,
-  isbn = false,
-  url = false,
-  doi = false,
-  autocite = superscript,
-  natbib = true]{biblatex}
-\DeclareFieldFormat{labelnumberwidth}{#1\adddot}
-\AtNextBibliography{\footnotesize}
-\addbibresource{biblio.bib}
 
 \usepackage{xcolor}
 \definecolor{bostonuniversityred}{rgb}{0.8, 0.0, 0.0}
 \definecolor{blendedblue}{rgb}{0.2, 0.2, 0.6}
 \definecolor{blendedred}{rgb}{0.8, 0.2, 0.2}
 \definecolor{lightgray}{rgb}{0.5, 0.5, 0.5}
-
 \usepackage[bookmarks=true,
          breaklinks=true,
          pdfborder={0 0 0},
@@ -53,10 +24,5 @@
          hyperindex=true,
          linkbordercolor=white]{hyperref}
 
-%\theoremstyle{definition}
-%\newtheorem{definition}{Definition}[section]
-%\newtheorem{theorem}{Theorem}[section]
 
-\newcommand{\gid}[1]{\textcolor{bostonuniversityred}{#1}}
-\newcommand{\npr}[1]{\textcolor{blendedred}{#1}}
-\newcommand{\comment}[1]{\textcolor{lightgray}{#1}}
+

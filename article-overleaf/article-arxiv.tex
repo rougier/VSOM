@@ -1,0 +1,39 @@
+\documentclass[a4paper, 11pt]{article}
+\input{00-preamble-arxiv}
+\input{00-preamble}
+
+\begin{document}
+\maketitle
+\input{abstract}
+\setcounter{tocdepth}{2}
+\tableofcontents
+\pagebreak
+\input{01-introduction}
+\input{02-methods}
+\input{03-results}
+\input{04-discussion}
+
+\section*{Abbreviations}
+\begin{description}
+    \item[BMU]     Best Matching unit
+    \item[DNF-SOM] Dynamic Neural Field-Self-Organizing Map
+    \item[DSOM]    Dynamic Self-organizing Map
+    \item[KSOM]    Kohonen Self-Organizing Map (Kohonen original proposal)
+    \item[KDE]     Kernel Density Estimation
+    \item[RSOM]    Randomized Self-Organizing Map
+    \item[TDA]     Topological Data Analysis
+    \item[SOM]     Self-Organizing Map
+\end{description}
+
+\section*{Funding}
+This work was partially funded by grant ANR-17-CE24-0036.
+% \printbibliography %[heading=bibintoc]
+
+\bibliographystyle{plain}
+\bibliography{biblio}
+
+\newpage
+\appendix
+\input{05-appendix}
+
+\end{document}

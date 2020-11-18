@@ -1,0 +1,44 @@
+\usepackage[left=3cm, right=3cm, top=3cm, bottom=3cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{authblk}
+% See https://tex.stackexchange.com/questions/324656
+% (affiliations on same line to save on line on first page)
+\makeatletter
+\renewcommand\AB@affilsepx{~--- \protect\Affilfont}
+\makeatother
+
+\usepackage{libertine}
+\usepackage[libertine]{newtxmath}
+\usepackage[scaled=0.96]{zi4}
+
+\usepackage[numbers]{natbib}
+%% \usepackage[
+%%   backend=biber,
+%%   style = numeric,
+%%   sorting = none,
+%%   giveninits = true,
+%%   maxcitenames=3,
+%%   mincitenames=1,
+%%   maxbibnames=10,
+%%   isbn = false,
+%%   url = false,
+%%   doi = false,
+%%   autocite = superscript,
+%%   natbib = true]{biblatex}
+%% \DeclareFieldFormat{labelnumberwidth}{#1\adddot}
+%% \AtNextBibliography{\footnotesize}
+%% \addbibresource{biblio.bib}
+
+\title{Randomized Self Organizing Map}
+\date{\small \today}
+\author[1,2,3]{Nicolas P. Rougier}
+\author[4]{Georgios Is. Detorakis}
+\affil[1]{Inria Bordeaux Sud-Ouest}
+\affil[2]{Institut des Maladies Neurodégénératives,
+          Université  de Bordeaux, CNRS UMR 5293}
+\affil[3]{LaBRI, Université de Bordeaux,
+          Institut Polytechnique de Bordeaux, CNRS UMR 5800}
+\affil[4]{adNomus Inc., San Jose, CA, USA}
+\date{}
+
