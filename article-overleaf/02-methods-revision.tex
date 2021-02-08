@@ -141,27 +141,26 @@ Topological Data Analysis (TDA) \citep{Carlsson:2009} provides methods and tools
 
 \correction { We provide, here, a simple example of how we used TDA to
   extract information relative to the underlying topology of input and
-  neural spaces in order to compare them (a more rigorous description
-  of the methods used in this work are given in
-  section~\ref{sec:si_tda} of SI).  Figure~\ref{fig:tda_example}
-  illustrates a complete example of how we apply TDA in this
-  work. First we need to collect the data (point cloud). In our case
-  the data are either the $2$-dimensional points of the input space or
+  neural spaces (a more rigorous description of the methods used in this work
+  are given in section~\ref{sec:si_tda} of SI).
+  Figure~\ref{fig:tda_example} illustrates a complete example of how we apply
+  TDA in this work. First we need to collect the data (point cloud). In our
+  example the data are either the $2$-dimensional points of the input space or
   the codebooks of the neural space (see panel A of
   Figure~\ref{fig:tda_example}). Once we have the point cloud we apply
   a filtration process, where a disc of a specific radius, $\alpha$ is
-  drawn around each point. At each iteration the radius increases and
-  all the intersection of circles are registered. In
+  drawn around each point. We increase the radius systematically and
+  all the intersected discs are registered. In
   figure~\ref{fig:tda_example} B, radius $\alpha_1$ is too small and
   therefore there are no intersected discs. The simplicial complex
   (see section~\ref{sec:si_tda} for more details) in this case is a
-  set of points (simplex $0$). The isolated points in the bottom panel
-  of figure~\ref{fig:tda_example}B define the homology group
+  set of points (\emph{i.e.}, simplex $0$). The isolated points in the 
+  bottom panel of figure~\ref{fig:tda_example}B define the homology group
   $H0$. This can be seen also in the persistence barcode shown in
-  figure~\ref{fig:tda_example}E, where the blue lines correspond to
+  figure~\ref{fig:tda_example}E, where the blue lines correspond to the
   isolated points. The beginning of the line segment indicates the
-  radius at which each point are born and the end of the line when it
-  died. A line segment on the persistent barcode
+  radius at which each point is born and the end of the line shows when it
+  vanished (died). A line segment on the persistent barcode
   (figure~\ref{fig:tda_example}F) or a point on the persistent diagram
   (figure~\ref{fig:tda_example}E) appears when a disc is applied on a
   data point (birth) and it is preserved until the disc intersects
@@ -171,32 +170,32 @@ Topological Data Analysis (TDA) \citep{Carlsson:2009} provides methods and tools
   the most then that point considered significant from a topological
   point of view. }
 
-\correction { Back to our example, the radius $\alpha$ is increased
+\correction{Back to our example, the radius $\alpha$ is increased
   until some discs intersect each other ($\alpha_2$, panel C).  When
   two discs intersect, we connect their centers (dots) with a line
-  segment (simplex $1$). In figure~\ref{fig:tda_example}C, bottom
+  segment (\emph{i.e.}, simplex $1$). In figure~\ref{fig:tda_example}C, bottom
   panel, we see that there is a closed path formed by the connected
   linear segments and there is a hole in the complex.  This hole
   corresponds to an $H1$ homology group and the isolated point (or
-  points) to $H0$ homology.  The persistent barcode reveals the
+  points) to $H0$ homology. The persistent barcode reveals the
   formation of a hole when the radius reaches the $\alpha_2$ and the
-  orange linear segment begins in figure \ref{fig:tda_example}E. The
-  other orange line segment corresponds to some other radius that does
-  not appear for illustration purposes. Increasing the radius even
+  orange linear segment first appears in figure~\ref{fig:tda_example}E. The
+  other orange line segment corresponds to some other radius that is not
+  shown for illustration purposes. Increasing the radius even
   further, we get larger discs and now in some cases, more than two
   discs intersect. When three discs intersect we obtain a triangle
-  (simplex $3$, pink triangles in panel D) and when four discs
-  intersect we get a tetrahedron (blue color in panel D), etc. Both
-  the triangles and the tetrahedron are not important topological
+  (simplex $2$, pink triangles in panel D) and when four discs
+  intersect we get a tetrahedron (simplex $3$, blue color in panel D), etc.
+  Both the triangles and the tetrahedron are not important topological
   features and thus we ignore them. What is important here is the
   number of isolated points, holes an voids (we are not considering
   voids in this example). }
 
-\correction { By following the procedure described in the
+\correction{By following the procedure described in the
   aforementioned example, for any $n$-dimensional inputs, we can
   obtain the persistence barcodes and diagrams, like the ones in
   figures~\ref{fig:tda_example} \textbf{E} and \textbf{F},
-  respectively.  By inspecting the barcodes we can decide if there is
+  respectively. By inspecting the barcodes we can decide if there is
   any important (persistent) topological feature. Furthermore, we can
   compare quantitatively the persistence diagrams by using distance
   functions such as the Bottleneck distance~\citep{Chazal:2017}. Thus
